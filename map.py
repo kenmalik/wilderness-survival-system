@@ -1,10 +1,12 @@
 from drawable import Drawable
-from item import Item
+from item import FoodBonus, GoldBonus, Item, WaterBonus
 from terrain import Plains, Desert, Mountain, Forest, Swamp, Terrain
 from player import Player
 import random
 
 TERRAIN_TYPES = (Plains, Desert, Mountain, Forest, Swamp)
+ITEM_TYPES = (GoldBonus, FoodBonus, WaterBonus)
+ITEM_COUNT = 10
 
 type Point = tuple[int, int]
 
@@ -31,3 +33,11 @@ class Map(Drawable):
 
     def add_item(self, location: Point, item: Item):
         self.items[location] = item
+
+    def populate_items(self):
+        self.items.clear()
+        for _ in range(ITEM_COUNT):
+            location: Point = (random.randrange(len(self.terrain)), random.randrange(len(self.terrain[0])))
+            while location in self.items:
+                location = (random.randrange(len(self.terrain)), random.randrange(len(self.terrain[0])))
+            self.items[location] = random.choice(ITEM_TYPES)(random.randrange(1, 4))
