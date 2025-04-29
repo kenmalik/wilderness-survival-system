@@ -25,7 +25,6 @@ class Map(Drawable):
                     self.items[(i, j)].draw()
                 else:
                     square.draw()
-                print(" ", end="")
             print()
 
     def add_player(self, location: Point, player: Player):

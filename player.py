@@ -1,4 +1,5 @@
 from drawable import Drawable
+from console import console
 
 class Player(Drawable):
     def __init__(self, icon: str):
@@ -15,4 +16,4 @@ class Player(Drawable):
               Gold: {self.current_gold}""")
 
     def draw(self):
-        print(self.icon, end="")
+        console.print(self.icon, end="", style="bold white on indian_red")

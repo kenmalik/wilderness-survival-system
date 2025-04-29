@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from drawable import Drawable
 from player import Player
+from console import console
 
 
 class Item(Drawable, ABC):
@@ -19,7 +20,7 @@ class GoldBonus(Item):
         player.current_gold += self.amount
 
     def draw(self):
-        print(self.icon, end="")
+        console.print(self.icon, end="", style="bold black on yellow")
 
 
 class FoodBonus(Item):
@@ -32,7 +33,7 @@ class FoodBonus(Item):
         player.current_food += self.amount
 
     def draw(self):
-        print(self.icon, end="")
+        console.print(self.icon, end="", style="bold white on dark_red")
 
 
 class WaterBonus(Item):
@@ -45,7 +46,7 @@ class WaterBonus(Item):
         player.current_water += self.amount
 
     def draw(self):
-        print(self.icon, end="")
+        console.print(self.icon, end="", style="bold white on dodger_blue3")
 
 
 class Trader(Item):

@@ -1,12 +1,14 @@
 from item import Trader
 from map import Map
 from player import Player
+from console import console
 
 if __name__ == "__main__":
-    print("Wilderness Survival System")
+    console.rule("Wilderness Survival System")
+    print()
 
-    map = Map(16, 32)
-    player = Player("X")
+    map = Map(16, 64)
+    player = Player("P")
 
     trader = Trader(4)
 
@@ -15,3 +17,4 @@ if __name__ == "__main__":
     map.add_item((4, 2), trader)
     
     map.draw()
+    print()
