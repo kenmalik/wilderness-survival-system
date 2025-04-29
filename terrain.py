@@ -3,6 +3,7 @@ from player import Player
 from text_renderable import TextRenderable
 from rich.text import Text
 
+
 class Terrain(TextRenderable, ABC):
     @abstractmethod
     def apply_cost(self, player: Player):
