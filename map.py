@@ -14,10 +14,8 @@ type Point = tuple[int, int]
 
 
 class Map:
-    def __init__(self, x: int, y: int):
-        self.terrain: list[list[Terrain]] = [
-            [random.choice(TERRAIN_TYPES)() for _ in range(y)] for _ in range(x)
-        ]
+    def __init__(self, height: int, width: int):
+        self.generate_terrain(height, width)
         self.players: dict[Point, Player] = {}
         self.items: dict[Point, Item] = {}
 
@@ -35,13 +33,13 @@ class Map:
         context.remove_suffix("\n")
         return Panel(Padding(context, (1, 2)), title="World Map")
 
-    def add_player(self, location: Point, player: Player):
+    def add_player(self, location: Point, player: Player) -> None:
         self.players[location] = player
 
-    def add_item(self, location: Point, item: Item):
+    def add_item(self, location: Point, item: Item) -> None:
         self.items[location] = item
 
-    def populate_items(self):
+    def populate_items(self) -> None:
         self.items.clear()
         for _ in range(ITEM_COUNT):
             location: Point = (
@@ -54,3 +52,9 @@ class Map:
                     random.randrange(len(self.terrain[0])),
                 )
             self.items[location] = random.choice(ITEM_TYPES)(random.randrange(1, 4))
+
+    def generate_terrain(self, height: int, width: int) -> None:
+        self.terrain: list[list[Terrain]] = [
+            [random.choice(TERRAIN_TYPES)() for _ in range(width)]
+            for _ in range(height)
+        ]
