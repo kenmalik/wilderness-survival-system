@@ -1,7 +1,7 @@
-from drawable import Drawable
-from console import console
+from text_renderable import TextRenderable
+from rich.text import Text
 
-class Player(Drawable):
+class Player(TextRenderable):
     def __init__(self, icon: str):
         self.current_strength = 0
         self.current_water = 0
@@ -15,5 +15,5 @@ class Player(Drawable):
               Food: {self.current_food}
               Gold: {self.current_gold}""")
 
-    def draw(self):
-        console.print(self.icon, end="", style="bold white on indian_red")
+    def render(self, context: Text):
+        context.append(self.icon, style="bold white on indian_red")

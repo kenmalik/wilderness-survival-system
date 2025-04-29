@@ -3,6 +3,10 @@ from item import FoodBonus, GoldBonus, Item, WaterBonus
 from terrain import Plains, Desert, Mountain, Forest, Swamp, Terrain
 from player import Player
 import random
+from console import console
+from rich.text import Text
+from rich.panel import Panel
+from rich.padding import Padding
 
 TERRAIN_TYPES = (Plains, Desert, Mountain, Forest, Swamp)
 ITEM_TYPES = (GoldBonus, FoodBonus, WaterBonus)
@@ -17,15 +21,18 @@ class Map(Drawable):
         self.items: dict[Point, Item] = {}
 
     def draw(self):
+        context = Text()
         for i, row in enumerate(self.terrain):
             for j, square in enumerate(row):
                 if (i, j) in self.players:
-                    self.players[(i, j)].draw()
+                    self.players[(i, j)].render(context)
                 elif (i, j) in self.items:
-                    self.items[(i, j)].draw()
+                    self.items[(i, j)].render(context)
                 else:
-                    square.draw()
-            print()
+                    square.render(context)
+            context.append("\n")
+        context.remove_suffix("\n")
+        console.print(Panel.fit(Padding(context, (1, 2)), title="World Map"), justify="center")
 
     def add_player(self, location: Point, player: Player):
         self.players[location] = player

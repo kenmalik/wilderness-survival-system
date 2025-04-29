@@ -7,7 +7,7 @@ if __name__ == "__main__":
     console.rule("Wilderness Survival System")
     print()
 
-    map = Map(16, 64)
+    map = Map(32, 128)
     player = Player("P")
 
     trader = Trader(4)

@@ -1,9 +1,9 @@
-from drawable import Drawable
 from abc import ABC, abstractmethod
 from player import Player
-from console import console
+from text_renderable import TextRenderable
+from rich.text import Text
 
-class Terrain(Drawable, ABC):
+class Terrain(TextRenderable, ABC):
     @abstractmethod
     def apply_cost(self, player: Player):
         pass
@@ -20,8 +20,8 @@ class Plains(Terrain):
         player.current_water -= self.WATER_COST
         player.current_strength -= self.MOVEMENT_COST
 
-    def draw(self):
-        console.print(self.ICON, end="", style="wheat4 on dark_sea_green3")
+    def render(self, context: Text):
+        context.append(self.ICON, style="wheat4 on dark_sea_green3")
 
 
 class Desert(Terrain):
@@ -35,8 +35,8 @@ class Desert(Terrain):
         player.current_water -= self.WATER_COST
         player.current_strength -= self.MOVEMENT_COST
 
-    def draw(self):
-        console.print(self.ICON, end="", style="grey53 on light_yellow3")
+    def render(self, context: Text):
+        context.append(self.ICON, style="grey53 on light_yellow3")
 
 
 class Mountain(Terrain):
@@ -50,8 +50,8 @@ class Mountain(Terrain):
         player.current_water -= self.WATER_COST
         player.current_strength -= self.MOVEMENT_COST
 
-    def draw(self):
-        console.print(self.ICON, end="", style="grey37 on grey53")
+    def render(self, context: Text):
+        context.append(self.ICON, style="grey37 on grey53")
 
 
 class Forest(Terrain):
@@ -65,8 +65,8 @@ class Forest(Terrain):
         player.current_water -= self.WATER_COST
         player.current_strength -= self.MOVEMENT_COST
 
-    def draw(self):
-        console.print(self.ICON, end="", style="wheat4 on dark_sea_green4")
+    def render(self, context: Text):
+        context.append(self.ICON, style="wheat4 on dark_sea_green4")
 
 
 class Swamp(Terrain):
@@ -80,5 +80,5 @@ class Swamp(Terrain):
         player.current_water -= self.WATER_COST
         player.current_strength -= self.MOVEMENT_COST
 
-    def draw(self):
-        console.print(self.ICON, end="", style="dark_green on chartreuse4")
+    def render(self, context: Text):
+        context.append(self.ICON, style="dark_green on chartreuse4")

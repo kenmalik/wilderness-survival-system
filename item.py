@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
-from drawable import Drawable
 from player import Player
-from console import console
+from text_renderable import TextRenderable
+from rich.text import Text
 
 
-class Item(Drawable, ABC):
+class Item(TextRenderable, ABC):
     @abstractmethod
     def apply_effect(self, player: Player):
         pass
@@ -19,8 +19,8 @@ class GoldBonus(Item):
     def apply_effect(self, player: Player):
         player.current_gold += self.amount
 
-    def draw(self):
-        console.print(self.icon, end="", style="bold black on yellow")
+    def render(self, context: Text):
+        context.append(self.icon, style="bold black on yellow")
 
 
 class FoodBonus(Item):
@@ -32,8 +32,8 @@ class FoodBonus(Item):
     def apply_effect(self, player: Player):
         player.current_food += self.amount
 
-    def draw(self):
-        console.print(self.icon, end="", style="bold white on dark_red")
+    def render(self, context: Text):
+        context.append(self.icon, style="bold white on dark_red")
 
 
 class WaterBonus(Item):
@@ -45,8 +45,8 @@ class WaterBonus(Item):
     def apply_effect(self, player: Player):
         player.current_water += self.amount
 
-    def draw(self):
-        console.print(self.icon, end="", style="bold white on dodger_blue3")
+    def render(self, context: Text):
+        context.append(self.icon, style="bold white on dodger_blue3")
 
 
 class Trader(Item):
@@ -58,5 +58,5 @@ class Trader(Item):
     def apply_effect(self, player: Player):
         pass
 
-    def draw(self):
-        print(self.icon, end="")
+    def render(self, context: Text):
+        context.append(self.icon, style="white on black")
