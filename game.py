@@ -59,6 +59,7 @@ class Game(Listener):
             Layout(name="messages"),
             Layout(name="stats"),
         )
+        layout["info"]["stats"].ratio = 2
         return layout
 
     @classmethod
