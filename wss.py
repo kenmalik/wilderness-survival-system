@@ -1,3 +1,4 @@
+from direction import Direction
 from map import Map
 from message_board import MessageBoard
 from player import Player
@@ -60,7 +61,7 @@ if __name__ == "__main__":
 
             # map.populate_items(items)
             # map.generate_terrain(size[0], size[1])
-            player.move(0, 1)
+            player.move_direction(Direction.EAST)
             map.update()
 
             layout["map"].update(map.draw())

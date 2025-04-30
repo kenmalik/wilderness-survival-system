@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 from text_renderable import TextRenderable
 from rich.text import Text
 
+from direction import Direction
+
 
 if TYPE_CHECKING:
     from map import Map
@@ -35,5 +37,5 @@ class Player(TextRenderable):
     def render(self, context: Text):
         context.append(self.icon, style="bold white on indian_red")
 
-    def move(self, dy: int, dx: int):
-        self.map.move_player(self, self.y + dy, self.x + dx)
+    def move_direction(self, direction: Direction):
+        self.map.move_player_direction(self, direction)

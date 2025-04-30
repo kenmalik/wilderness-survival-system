@@ -1,3 +1,4 @@
+from direction import Direction
 from item import FoodBonus, GoldBonus, Item, WaterBonus
 from message_board import MessageBoard
 from terrain import Plains, Desert, Mountain, Forest, Swamp, Terrain
@@ -106,6 +107,11 @@ class Map:
     def update(self) -> None:
         pass
 
+    def move_player_direction(self, player: Player, direction: Direction) -> None:
+        self.notify(Event("moved", {"player": player, "direction": direction}))
+        (dy, dx) = direction.value
+        self.move_player(player, player.y + dy, player.x + dx)
+
     def move_player(self, player: Player, y: int, x: int) -> None:
         assert y >= 0 and y < len(self.terrain) and x >= 0 and x < len(self.terrain[0])
         assert player in self.players.values()
@@ -117,9 +123,7 @@ class Map:
         new_position = (y, x)
         player.y = y
         player.x = x
-
         self.players[new_position] = player
-        self.notify(Event("moved", {"player": player}))
 
         self.terrain[y][x].apply_cost(player)
 

@@ -1,4 +1,5 @@
 from rich.text import Text
+from direction import direction_strings
 
 
 class MessageBoard():
@@ -8,7 +9,8 @@ class MessageBoard():
     def on_event(self, event):
         if event.type == "moved":
             player = event.data["player"]
-            self.message_stack.append(f"Player {player.icon} moved")
+            direction = event.data["direction"]
+            self.message_stack.append(f"Player {player.icon} moved {direction_strings[direction]}")
 
         if event.type == "item_picked_up":
             player = event.data["player"]
