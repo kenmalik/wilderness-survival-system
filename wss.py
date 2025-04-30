@@ -1,3 +1,4 @@
+import sys
 from rich.prompt import IntPrompt, Prompt
 
 from game import Game
@@ -18,4 +19,8 @@ if __name__ == "__main__":
     )
 
     game = Game(difficulty, player_count)
-    game.run()
+
+    if len(sys.argv) > 1 and sys.argv[1] == "--demo-terrain":
+        game.demo_terrain()
+    else:
+        game.run()

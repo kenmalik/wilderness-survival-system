@@ -38,7 +38,6 @@ class Game:
         self.map.place_players(self.players)
 
         self.messages = MessageBoard()
-
         self.map.register_listener(self.messages)
 
         self.layout = Layout()
@@ -46,16 +45,23 @@ class Game:
             Layout(self.map.draw(), name="map"),
             Layout(name="info"),
         )
-
+        self.layout["map"].ratio = 4
         self.layout["info"].split_row(
-            Layout(Panel("", title="Messages"), name="messages"),
+            Layout(name="messages"),
             Layout(name="stats"),
         )
 
+        self.update_ui()
+
+    def update_ui(self) -> None:
+        self.layout["map"].update(self.map.draw())
+        self.layout["info"]["messages"].update(
+            Panel(self.messages.render(), title="Messages")
+        )
         self.layout["info"]["stats"].split_row(
             *Game.get_player_stat_panels(self.players)
         )
-        self.layout["map"].ratio = 4
+
 
     @classmethod
     def get_player_stat_panels(cls, players: list[Player]):
@@ -71,17 +77,22 @@ class Game:
             for _ in range(25):
                 time.sleep(0.5)
 
-                # map.populate_items(items)
-                # map.generate_terrain(size[0], size[1])
                 for player in self.players:
                     player.move_direction(Direction.EAST)
-                self.map.update()
 
-                self.layout["map"].update(self.map.draw())
-                self.layout["info"]["messages"].update(
-                    Panel(self.messages.render(), title="Messages")
-                )
-                self.layout["info"]["stats"].split_row(
-                    *Game.get_player_stat_panels(self.players)
-                )
+                self.update_ui()
+                live.update(self.layout)
+
+    def demo_terrain(self) -> None:
+        preset = self.difficulty_presets["Hard"]
+        with Live(self.layout, refresh_per_second=5, screen=True) as live:
+            for _ in range(25):
+                time.sleep(0.5)
+
+                self.map.populate_items(preset["item_count"])
+                self.map.generate_terrain(preset["map_size"][0], preset["map_size"][1])
+                for player in self.players:
+                    player.move_direction(Direction.EAST)
+
+                self.update_ui()
                 live.update(self.layout)

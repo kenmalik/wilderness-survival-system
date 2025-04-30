@@ -121,9 +121,6 @@ class Map:
         else:
             return Mountain
 
-    def update(self) -> None:
-        pass
-
     def move_player_direction(self, player: Player, direction: Direction) -> None:
         self.notify(Event("moved", {"player": player, "direction": direction}))
         (dy, dx) = direction.value
