@@ -1,6 +1,5 @@
 from direction import Direction
 from item import FoodBonus, GoldBonus, Item, WaterBonus
-from message_board import MessageBoard
 from terrain import Plains, Desert, Mountain, Forest, Swamp, Terrain
 from player import Player
 import random
@@ -10,7 +9,8 @@ from rich.padding import Padding
 import numpy as np
 import noise
 from event import Event
-import terrain
+
+from listener import Listener
 
 ITEM_TYPES = (GoldBonus, FoodBonus, WaterBonus)
 
@@ -45,10 +45,10 @@ class Map:
         context.remove_suffix("\n")
         return Panel(Padding(context, (1, 2)), title="World Map")
 
-    def register_listener(self, listener: MessageBoard):
+    def register_listener(self, listener: Listener):
         self.listeners.append(listener)
 
-    def notify(self, event):
+    def notify(self, event: Event):
         for listener in self.listeners:
             listener.on_event(event)
 
@@ -138,6 +138,9 @@ class Map:
         player.y = y
         player.x = x
         self.players[new_position] = player
+
+        if player.x == len(self.terrain[0]) - 1:
+            self.notify(Event("game_won", {"player": player}))
 
         old_terrain = self.terrain[old_position[0]][old_position[1]]
         new_terrain = self.terrain[new_position[0]][new_position[1]]

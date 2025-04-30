@@ -1,12 +1,14 @@
 from rich.text import Text
 from direction import direction_strings
+from listener import Listener
+from event import Event
 
 
-class MessageBoard():
+class MessageBoard(Listener):
     def __init__(self):
         self.message_stack: list[str] = []
 
-    def on_event(self, event):
+    def on_event(self, event: Event) -> None:
         if event.type == "moved":
             player = event.data["player"]
             direction = event.data["direction"]
@@ -21,6 +23,10 @@ class MessageBoard():
             player = event.data["player"]
             new_terrain = event.data["new_terrain"]
             self.message_stack.append(f"Player {player.icon}: at a {new_terrain}")
+
+        if event.type == "game_won":
+            player = event.data["player"]
+            self.message_stack.append(f"Player {player.icon} wins!")
             
     def render(self) -> Text:
         display = Text()
