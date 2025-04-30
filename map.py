@@ -44,6 +44,13 @@ class Map:
         context.remove_suffix("\n")
         return Panel(Padding(context, (1, 2)), title="World Map")
 
+    def register_listener(self, listener: MessageBoard):
+        self.listeners.append(listener)
+
+    def notify(self, event):
+        for listener in self.listeners:
+            listener.on_event(event)
+
     def add_player(self, location: Point, player: Player) -> None:
         self.players[location] = player
         player.y = location[0]
@@ -119,22 +126,27 @@ class Map:
         old_position = (player.y, player.x)
         assert old_position in self.players
         del self.players[old_position]
+        old_environment = self.terrain[player.y][player.x]
 
         new_position = (y, x)
         player.y = y
         player.x = x
         self.players[new_position] = player
 
-        self.terrain[y][x].apply_cost(player)
+        new_environment = self.terrain[y][x]
+        new_environment.apply_cost(player)
+        if (type(old_environment) != type(new_environment)):
+            self.notify(
+                Event(
+                    "environment_entered",
+                    {
+                        "player": player,
+                        "new_environment": new_environment,
+                    },
+                )
+            )
 
         if (y, x) in self.items:
             item = self.items[new_position]
             item.apply_effect(player)
             self.notify(Event("item_picked_up", {"player": player, "item": item}))
-
-    def register_listener(self, listener: MessageBoard):
-        self.listeners.append(listener)
-
-    def notify(self, event):
-        for listener in self.listeners:
-            listener.on_event(event)

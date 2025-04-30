@@ -10,12 +10,17 @@ class MessageBoard():
         if event.type == "moved":
             player = event.data["player"]
             direction = event.data["direction"]
-            self.message_stack.append(f"Player {player.icon} moved {direction_strings[direction]}")
+            self.message_stack.append(f"Player {player.icon}: I'll travel {direction_strings[direction]}")
 
         if event.type == "item_picked_up":
             player = event.data["player"]
             item = event.data["item"]
-            self.message_stack.append(f"Player {player.icon} picked up {item.icon}")
+            self.message_stack.append(f"Player {player.icon}: picked up some {item.icon}")
+
+        if event.type == "environment_entered":
+            player = event.data["player"]
+            new_environment = event.data["new_environment"]
+            self.message_stack.append(f"Player {player.icon}: at a {new_environment}")
             
     def render(self) -> Text:
         display = Text()

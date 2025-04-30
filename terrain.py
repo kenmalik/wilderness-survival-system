@@ -24,6 +24,9 @@ class Plains(Terrain):
     def render(self, context: Text):
         context.append(self.ICON, style="wheat4 on dark_sea_green3")
 
+    def __str__(self):
+        return "plains"
+
 
 class Desert(Terrain):
     ICON = "*"
@@ -38,6 +41,9 @@ class Desert(Terrain):
 
     def render(self, context: Text):
         context.append(self.ICON, style="grey53 on light_yellow3")
+
+    def __str__(self):
+        return "desert"
 
 
 class Mountain(Terrain):
@@ -54,6 +60,9 @@ class Mountain(Terrain):
     def render(self, context: Text):
         context.append(self.ICON, style="grey37 on grey53")
 
+    def __str__(self):
+        return "mountain"
+
 
 class Forest(Terrain):
     ICON = "#"
@@ -69,6 +78,9 @@ class Forest(Terrain):
     def render(self, context: Text):
         context.append(self.ICON, style="wheat4 on dark_sea_green4")
 
+    def __str__(self):
+        return "forest"
+
 
 class Swamp(Terrain):
     ICON = "="
@@ -83,3 +95,6 @@ class Swamp(Terrain):
 
     def render(self, context: Text):
         context.append(self.ICON, style="dark_green on chartreuse4")
+
+    def __str__(self):
+        return "swamp"
