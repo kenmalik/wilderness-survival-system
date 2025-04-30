@@ -34,21 +34,27 @@ if __name__ == "__main__":
     items = difficulty_presets[difficulty]["Items"]
 
     map = Map(size[0], size[1], items)
-    player = Player("P")
+    player = Player("P", map)
+    player.print_stats()
 
     map.add_player((random.randrange(0, size[0]), 0), player)
 
     layout = Layout()
     layout.split_column(
         Layout(map.draw(), name="map"),
-        Layout(Panel("Messages here", title="Messages"), name="messages"),
+        Layout(Panel(player.print_stats(), title="Messages"), name="messages"),
     )
     layout["map"].ratio = 4
 
     with Live(layout, refresh_per_second=5, screen=True) as live:
         for _ in range(25):
             time.sleep(0.5)
-            map.populate_items(items)
-            map.generate_terrain(size[0], size[1])
+
+            # map.populate_items(items)
+            # map.generate_terrain(size[0], size[1])
+            player.move(0, 1)
+            map.update()
+
             layout["map"].update(map.draw())
+            layout["messages"].update(Panel(player.print_stats()))
             live.update(layout)

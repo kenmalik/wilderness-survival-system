@@ -42,6 +42,8 @@ class Map:
 
     def add_player(self, location: Point, player: Player) -> None:
         self.players[location] = player
+        player.y = location[0]
+        player.x = location[1]
 
     def add_item(self, location: Point, item: Item) -> None:
         self.items[location] = item
@@ -97,3 +99,26 @@ class Map:
             return Forest
         else:
             return Mountain
+
+    def update(self) -> None:
+        pass
+
+    def move_player(self, player: Player, y: int, x: int) -> None:
+        assert y >= 0 and y < len(self.terrain) and x >= 0 and x < len(self.terrain[0])
+        assert player in self.players.values()
+        
+        old_position = (player.y, player.x)
+        assert old_position in self.players
+        del self.players[old_position]
+
+        new_position = (y, x)
+        player.y = y
+        player.x = x
+
+        self.players[new_position] = player
+        
+        self.terrain[y][x].apply_cost(player)
+
+        if (y, x) in self.items:
+            self.items[new_position].apply_effect(player)
+        
