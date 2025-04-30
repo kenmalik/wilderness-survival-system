@@ -29,7 +29,6 @@ class Game:
     def __init__(self, difficulty: str, player_count: int):
         map_size = self.difficulty_presets[difficulty]["map_size"]
         item_count = self.difficulty_presets[difficulty]["item_count"]
-
         self.map = Map(map_size[0], map_size[1], item_count)
 
         self.players: list[Player] = []
@@ -40,28 +39,22 @@ class Game:
         self.messages = MessageBoard()
         self.map.register_listener(self.messages)
 
-        self.layout = Layout()
-        self.layout.split_column(
-            Layout(self.map.draw(), name="map"),
+        self.layout = Game.make_ui()
+        self.update_ui()
+
+    @classmethod
+    def make_ui(cls):
+        layout = Layout()
+        layout.split_column(
+            Layout(name="map"),
             Layout(name="info"),
         )
-        self.layout["map"].ratio = 4
-        self.layout["info"].split_row(
+        layout["map"].ratio = 4
+        layout["info"].split_row(
             Layout(name="messages"),
             Layout(name="stats"),
         )
-
-        self.update_ui()
-
-    def update_ui(self) -> None:
-        self.layout["map"].update(self.map.draw())
-        self.layout["info"]["messages"].update(
-            Panel(self.messages.render(), title="Messages")
-        )
-        self.layout["info"]["stats"].split_row(
-            *Game.get_player_stat_panels(self.players)
-        )
-
+        return layout
 
     @classmethod
     def get_player_stat_panels(cls, players: list[Player]):
@@ -71,6 +64,15 @@ class Game:
                 Panel(player.print_stats(), title=f"Player {player.icon} Stats")
             )
         return panels
+
+    def update_ui(self) -> None:
+        self.layout["map"].update(self.map.draw())
+        self.layout["info"]["messages"].update(
+            Panel(self.messages.render(), title="Messages")
+        )
+        self.layout["info"]["stats"].split_row(
+            *Game.get_player_stat_panels(self.players)
+        )
 
     def run(self) -> None:
         with Live(self.layout, refresh_per_second=5, screen=True) as live:
