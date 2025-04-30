@@ -25,14 +25,12 @@ class Player(TextRenderable):
         self.map = map
 
     def print_stats(self) -> Text:
-        return Text(
-            f"""
-            Player: {self.icon}
-            Strength: {self.current_strength}
-            Water: {self.current_water}
-            Food: {self.current_food}
-            Gold: {self.current_gold}"""
-        )
+        stats = Text()
+        stats.append(f"Strength: {self.current_strength}\n")
+        stats.append(f"Water: {self.current_water}\n")
+        stats.append(f"Food: {self.current_food}\n")
+        stats.append(f"Gold: {self.current_gold}\n")
+        return stats
 
     def render(self, context: Text):
         context.append(self.icon, style="bold white on indian_red")

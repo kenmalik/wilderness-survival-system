@@ -46,7 +46,11 @@ if __name__ == "__main__":
     layout = Layout()
     layout.split_column(
         Layout(map.draw(), name="map"),
-        Layout(Panel(player.print_stats(), title="Messages"), name="messages"),
+        Layout(name="info"),
+    )
+    layout["info"].split_row(
+        Layout(Panel("", title="Messages"), name="messages"), 
+        Layout(Panel.fit(player.print_stats(), title=f"Player {player.icon} Stats"), name="stats"), 
     )
     layout["map"].ratio = 4
 
@@ -60,5 +64,6 @@ if __name__ == "__main__":
             map.update()
 
             layout["map"].update(map.draw())
-            layout["messages"].update(Panel(messages.render(), title="Messages"))
+            layout["info"]["messages"].update(Panel(messages.render(), title="Messages"))
+            layout["info"]["stats"].update(Panel.fit(player.print_stats(), title=f"Player {player.icon} Stats"))
             live.update(layout)
