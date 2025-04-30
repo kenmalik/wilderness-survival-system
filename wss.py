@@ -1,4 +1,5 @@
 from map import Map
+from message_board import MessageBoard
 from player import Player
 from rich.live import Live
 from rich.layout import Layout
@@ -37,6 +38,9 @@ if __name__ == "__main__":
     player = Player("P", map)
     player.print_stats()
 
+    messages = MessageBoard()
+
+    map.register_listener(messages)
     map.add_player((random.randrange(0, size[0]), 0), player)
 
     layout = Layout()
@@ -56,5 +60,5 @@ if __name__ == "__main__":
             map.update()
 
             layout["map"].update(map.draw())
-            layout["messages"].update(Panel(player.print_stats()))
+            layout["messages"].update(Panel(messages.render(), title="Messages"))
             live.update(layout)

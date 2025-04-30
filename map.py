@@ -1,4 +1,5 @@
 from item import FoodBonus, GoldBonus, Item, WaterBonus
+from message_board import MessageBoard
 from terrain import Plains, Desert, Mountain, Forest, Swamp, Terrain
 from player import Player
 import random
@@ -7,6 +8,7 @@ from rich.panel import Panel
 from rich.padding import Padding
 import numpy as np
 import noise
+from event import Event
 
 ITEM_TYPES = (GoldBonus, FoodBonus, WaterBonus)
 
@@ -25,6 +27,7 @@ class Map:
         self.players: dict[Point, Player] = {}
         self.items: dict[Point, Item] = {}
         self.populate_items(item_count)
+        self.listeners = []
 
     def draw(self) -> Panel:
         context = Text(justify="center")
@@ -106,7 +109,7 @@ class Map:
     def move_player(self, player: Player, y: int, x: int) -> None:
         assert y >= 0 and y < len(self.terrain) and x >= 0 and x < len(self.terrain[0])
         assert player in self.players.values()
-        
+
         old_position = (player.y, player.x)
         assert old_position in self.players
         del self.players[old_position]
@@ -116,9 +119,18 @@ class Map:
         player.x = x
 
         self.players[new_position] = player
-        
+        self.notify(Event("moved", {"player": player}))
+
         self.terrain[y][x].apply_cost(player)
 
         if (y, x) in self.items:
-            self.items[new_position].apply_effect(player)
-        
+            item = self.items[new_position]
+            item.apply_effect(player)
+            self.notify(Event("item_picked_up", {"player": player, "item": item}))
+
+    def register_listener(self, listener: MessageBoard):
+        self.listeners.append(listener)
+
+    def notify(self, event):
+        for listener in self.listeners:
+            listener.on_event(event)
