@@ -9,7 +9,6 @@ import numpy as np
 import noise
 
 ITEM_TYPES = (GoldBonus, FoodBonus, WaterBonus)
-ITEM_COUNT = 10
 
 type Point = tuple[int, int]
 
@@ -21,10 +20,11 @@ class Map:
     persistence = 0.6
     lacunarity = 1.5
 
-    def __init__(self, height: int, width: int):
+    def __init__(self, height: int, width: int, item_count: int):
         self.generate_terrain(height, width)
         self.players: dict[Point, Player] = {}
         self.items: dict[Point, Item] = {}
+        self.populate_items(item_count)
 
     def draw(self) -> Panel:
         context = Text(justify="center")
@@ -46,9 +46,9 @@ class Map:
     def add_item(self, location: Point, item: Item) -> None:
         self.items[location] = item
 
-    def populate_items(self) -> None:
+    def populate_items(self, item_count) -> None:
         self.items.clear()
-        for _ in range(ITEM_COUNT):
+        for _ in range(item_count):
             location: Point = (
                 random.randrange(len(self.terrain)),
                 random.randrange(len(self.terrain[0])),
