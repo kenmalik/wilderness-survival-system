@@ -5,8 +5,9 @@ import random
 from rich.text import Text
 from rich.panel import Panel
 from rich.padding import Padding
+import numpy as np
+import noise
 
-TERRAIN_TYPES = (Plains, Desert, Mountain, Forest, Swamp)
 ITEM_TYPES = (GoldBonus, FoodBonus, WaterBonus)
 ITEM_COUNT = 10
 
@@ -14,6 +15,12 @@ type Point = tuple[int, int]
 
 
 class Map:
+    # Procedural Generation Parameters
+    scale = 0.1
+    octaves = 6
+    persistence = 0.6
+    lacunarity = 1.5
+
     def __init__(self, height: int, width: int):
         self.generate_terrain(height, width)
         self.players: dict[Point, Player] = {}
@@ -54,7 +61,39 @@ class Map:
             self.items[location] = random.choice(ITEM_TYPES)(random.randrange(1, 4))
 
     def generate_terrain(self, height: int, width: int) -> None:
+        base = random.randrange(0, 500, 10)
+        height_map = np.zeros((height, width))
+        for y in range(height):
+            for x in range(width):
+                height_map[y][x] = noise.pnoise2(
+                    x * self.scale,
+                    y * self.scale,
+                    octaves=self.octaves,
+                    persistence=self.persistence,
+                    lacunarity=self.lacunarity,
+                    repeatx=width,
+                    repeaty=height,
+                    base=base,
+                )
+
+        # Normalize to 0-1
+        height_map = (height_map - height_map.min()) / (
+            height_map.max() - height_map.min()
+        )
+
         self.terrain: list[list[Terrain]] = [
-            [random.choice(TERRAIN_TYPES)() for _ in range(width)]
-            for _ in range(height)
+            [self.get_terrain(height_map[y][x])() for x in range(width)]
+            for y in range(height)
         ]
+
+    def get_terrain(self, elevation):
+        if elevation < 0.3:
+            return Swamp
+        elif elevation < 0.5:
+            return Plains
+        elif elevation < 0.62:
+            return Desert
+        elif elevation < 0.8:
+            return Forest
+        else:
+            return Mountain

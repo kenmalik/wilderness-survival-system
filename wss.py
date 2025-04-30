@@ -1,7 +1,6 @@
 from item import Trader
 from map import Map
 from player import Player
-from console import console
 from rich.live import Live
 from rich.layout import Layout
 from rich.panel import Panel
@@ -24,9 +23,10 @@ if __name__ == "__main__":
     )
     layout["map"].ratio = 4
 
-    with Live(layout, refresh_per_second=4, screen=True) as live:
+    with Live(layout, refresh_per_second=5, screen=True) as live:
         for _ in range(25):
-            time.sleep(0.4)
+            time.sleep(0.5)
             map.populate_items()
+            map.generate_terrain(32, 128)
             layout["map"].update(map.draw())
             live.update(layout)
