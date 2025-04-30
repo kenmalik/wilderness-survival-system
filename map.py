@@ -139,9 +139,6 @@ class Map:
         player.x = x
         self.players[new_position] = player
 
-        if player.x == len(self.terrain[0]) - 1:
-            self.notify(Event("game_won", {"player": player}))
-
         old_terrain = self.terrain[old_position[0]][old_position[1]]
         new_terrain = self.terrain[new_position[0]][new_position[1]]
         self.apply_terrain_effects(player, old_terrain, new_terrain)

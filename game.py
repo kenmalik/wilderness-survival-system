@@ -1,4 +1,3 @@
-from listener import Listener
 from message_board import MessageBoard
 from map import Map
 from player import Player
@@ -7,12 +6,11 @@ from rich.panel import Panel
 from rich.live import Live
 from direction import Direction
 from player import Player
-from event import Event
 
 import time
 
 
-class Game(Listener):
+class Game:
     difficulty_presets = {
         "Easy": {
             "map_size": (16, 64),
@@ -41,7 +39,6 @@ class Game(Listener):
         self.map.place_players(self.players)
 
         self.messages = MessageBoard()
-        self.map.register_listener(self)
         self.map.register_listener(self.messages)
 
         self.layout = Game.make_ui()
@@ -84,15 +81,14 @@ class Game(Listener):
         with Live(self.layout, refresh_per_second=5, screen=True) as live:
             while not self.game_over:
                 time.sleep(0.5)
+
                 for player in self.players:
                     player.move_direction(Direction.EAST)
+                    if player.x == len(self.map.terrain[0]) - 1:
+                        self.game_over = True
 
                 self.update_ui()
                 live.update(self.layout)
-
-    def on_event(self, event: Event) -> None:
-        if event.type == "game_won":
-            self.game_over = True
 
     def demo_terrain(self) -> None:
         preset = self.difficulty_presets["Hard"]
