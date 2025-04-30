@@ -17,10 +17,10 @@ class MessageBoard():
             item = event.data["item"]
             self.message_stack.append(f"Player {player.icon}: picked up some {item.icon}")
 
-        if event.type == "environment_entered":
+        if event.type == "terrain_entered":
             player = event.data["player"]
-            new_environment = event.data["new_environment"]
-            self.message_stack.append(f"Player {player.icon}: at a {new_environment}")
+            new_terrain = event.data["new_terrain"]
+            self.message_stack.append(f"Player {player.icon}: at a {new_terrain}")
             
     def render(self) -> Text:
         display = Text()

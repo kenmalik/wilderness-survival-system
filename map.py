@@ -133,27 +133,35 @@ class Map:
         old_position = (player.y, player.x)
         assert old_position in self.players
         del self.players[old_position]
-        old_environment = self.terrain[player.y][player.x]
 
         new_position = (y, x)
         player.y = y
         player.x = x
         self.players[new_position] = player
 
-        new_environment = self.terrain[y][x]
-        new_environment.apply_cost(player)
-        if (type(old_environment) != type(new_environment)):
+        old_terrain = self.terrain[old_position[0]][old_position[1]]
+        new_terrain = self.terrain[new_position[0]][new_position[1]]
+        self.apply_terrain_effects(player, old_terrain, new_terrain)
+
+        if (y, x) in self.items:
+            self.apply_item_effects(player, new_position)
+
+    def apply_terrain_effects(
+        self, player: Player, old_terrain: Terrain, new_terrain: Terrain
+    ) -> None:
+        new_terrain.apply_cost(player)
+        if type(old_terrain) != type(new_terrain):
             self.notify(
                 Event(
-                    "environment_entered",
+                    "terrain_entered",
                     {
                         "player": player,
-                        "new_environment": new_environment,
+                        "new_terrain": new_terrain,
                     },
                 )
             )
 
-        if (y, x) in self.items:
-            item = self.items[new_position]
-            item.apply_effect(player)
-            self.notify(Event("item_picked_up", {"player": player, "item": item}))
+    def apply_item_effects(self, player: Player, position: Point):
+        item = self.items[position]
+        item.apply_effect(player)
+        self.notify(Event("item_picked_up", {"player": player, "item": item}))
