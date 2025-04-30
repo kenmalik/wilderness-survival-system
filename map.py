@@ -10,6 +10,7 @@ from rich.padding import Padding
 import numpy as np
 import noise
 from event import Event
+import terrain
 
 ITEM_TYPES = (GoldBonus, FoodBonus, WaterBonus)
 
@@ -72,6 +73,15 @@ class Map:
                     random.randrange(len(self.terrain[0])),
                 )
             self.items[location] = random.choice(ITEM_TYPES)(random.randrange(1, 4))
+
+    def place_players(self, players: list[Player]) -> None:
+        for player in players:
+            location = (random.randrange(len(self.terrain)), 0)
+            while location in self.players:
+                location = (random.randrange(len(self.terrain)), 0)
+            self.players[location] = player
+            player.y = location[0]
+            player.x = location[1]
 
     def generate_terrain(self, height: int, width: int) -> None:
         base = random.randrange(0, 500, 10)
