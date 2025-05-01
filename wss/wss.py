@@ -1,9 +1,16 @@
 import sys
 from rich.prompt import IntPrompt, Prompt
+import logging
 
 from game import Game
 
-if __name__ == "__main__":
+logger = logging.getLogger(__name__)
+
+
+def main():
+    logging.basicConfig(filename="wss.log", level=logging.DEBUG)
+    logger.info("Started")
+
     difficulty = Prompt.ask(
         "Enter preferred difficulty",
         choices=["Easy", "Medium", "Hard"],
@@ -24,3 +31,9 @@ if __name__ == "__main__":
         game.demo_terrain()
     else:
         game.run()
+
+    logger.info("Finished")
+
+
+if __name__ == "__main__":
+    main()
