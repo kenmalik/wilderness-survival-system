@@ -10,6 +10,8 @@ from event import Event
 
 import time
 
+from vision import FocusedVision
+
 
 class Game:
     difficulty_presets = {
@@ -37,7 +39,7 @@ class Game:
         self.dead_players: list[Player] = []
         self.players: list[Player] = []
         for i in range(1, player_count + 1):
-            self.players.append(Player(str(i), self.map))
+            self.players.append(Player(str(i), self.map, FocusedVision()))
         self.map.place_players(self.players)
 
         self.messages = MessageBoard()
@@ -95,7 +97,7 @@ class Game:
                     if player.dead:
                         continue
 
-                    player.move_direction(Direction.EAST)
+                    player.update()
 
                     if player.x == len(self.map.terrain[0]) - 1:
                         self.game_over = True
