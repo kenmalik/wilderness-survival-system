@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from direction import Direction, direction_strings
+
 if TYPE_CHECKING:
     from player import Player
 
@@ -18,6 +20,17 @@ class Vision():
         visible_positions = [(player.y, player.x)]
 
         for dy, dx in self.fov:
+            if player.orientation == Direction.WEST:
+                dx = -dx
+            elif player.orientation == Direction.SOUTH:
+                temp = dy
+                dy = dx
+                dx = temp
+            elif player.orientation == Direction.NORTH:
+                temp = dy
+                dy = -dx
+                dx = temp
+
             if (
                 player.y + dy >= 0
                 and player.y + dy < y_limit
@@ -26,7 +39,7 @@ class Vision():
             ):
                 visible_positions.append((player.y + dy, player.x + dx))
 
-        logger.debug(f"Player {player.icon} at ({player.y}, {player.x}), sees {visible_positions}")
+        logger.debug(f"Player {player.icon} at ({player.y}, {player.x}), facing {direction_strings[player.orientation]}, sees {visible_positions}")
 
         return visible_positions
 

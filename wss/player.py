@@ -32,6 +32,8 @@ class Player(TextRenderable):
         self.map = map
         self.vision = vision
 
+        self.orientation = Direction.EAST
+
     def print_stats(self) -> Text:
         stats = Text()
         stats.append(f"Strength: {self.current_strength}\n")
