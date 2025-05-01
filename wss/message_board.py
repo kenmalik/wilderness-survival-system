@@ -32,6 +32,9 @@ class MessageBoard(Listener):
             player = event.data["player"]
             self.message_stack.append(f"Player {player.icon} died!")
             
+        if len(self.message_stack) > 10:
+            self.message_stack = self.message_stack[-10:]
+
     def render(self) -> Text:
         display = Text()
         for message in reversed(self.message_stack):
