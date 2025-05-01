@@ -27,6 +27,10 @@ class MessageBoard(Listener):
         if event.type == "game_won":
             player = event.data["player"]
             self.message_stack.append(f"Player {player.icon} wins!")
+
+        if event.type == "player_dead":
+            player = event.data["player"]
+            self.message_stack.append(f"Player {player.icon} died!")
             
     def render(self) -> Text:
         display = Text()

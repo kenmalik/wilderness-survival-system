@@ -6,6 +6,7 @@ from rich.panel import Panel
 from rich.live import Live
 from direction import Direction
 from player import Player
+from event import Event
 
 import time
 
@@ -33,6 +34,7 @@ class Game:
         item_count = self.difficulty_presets[difficulty]["item_count"]
         self.map = Map(map_size[0], map_size[1], item_count)
 
+        self.dead_players: list[Player] = []
         self.players: list[Player] = []
         for i in range(1, player_count + 1):
             self.players.append(Player(str(i), self.map))
@@ -63,8 +65,15 @@ class Game:
     def get_player_stat_panels(cls, players: list[Player]):
         panels: list[Panel] = []
         for player in players:
+            title = f"Player {player.icon}"
+
+            if player.dead:
+                title += " (Dead)"
+            else:
+                title += " Stats"
+
             panels.append(
-                Panel(player.print_stats(), title=f"Player {player.icon} Stats")
+                Panel(player.print_stats(), title=title)
             )
         return panels
 
@@ -83,12 +92,31 @@ class Game:
                 time.sleep(0.5)
 
                 for player in self.players:
+                    if player.dead:
+                        continue
+
                     player.move_direction(Direction.EAST)
+
                     if player.x == len(self.map.terrain[0]) - 1:
                         self.game_over = True
 
+                    if (
+                        player.current_strength <= 0
+                        or player.current_food <= 0
+                        or player.current_water <= 0
+                    ):
+                        self.messages.on_event(Event("player_dead", {"player": player}))
+                        self.dead_players.append(player)
+                        player.dead = True
+
+                if len(self.dead_players) == len(self.players):
+                    self.game_over = True
+
                 self.update_ui()
                 live.update(self.layout)
+
+            while True: # Keep display up after game ends until interrupt
+                pass
 
     def demo_terrain(self) -> None:
         preset = self.difficulty_presets["Hard"]

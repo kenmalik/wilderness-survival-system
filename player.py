@@ -17,14 +17,15 @@ class Player(TextRenderable):
     MAX_FOOD = 100
 
     def __init__(self, icon: str, map: Map):
-        self.current_strength = self.MAX_STRENGTH // 2
-        self.current_water = self.MAX_WATER // 2 
-        self.current_food = self.MAX_FOOD // 2 
+        self.current_strength = self.MAX_STRENGTH // 3
+        self.current_water = self.MAX_WATER // 3 
+        self.current_food = self.MAX_FOOD // 3 
         self.current_gold = 0
         self.x = -1
         self.y = -1
         self.icon = icon
         self.map = map
+        self.dead = False
 
     def print_stats(self) -> Text:
         stats = Text()
@@ -35,7 +36,7 @@ class Player(TextRenderable):
         return stats
 
     def render(self, context: Text):
-        context.append(self.icon, style="bold white on indian_red")
+        context.append(self.icon, style="bold white on indian_red" if not self.dead else "bold black on bright_black")
 
     def move_direction(self, direction: Direction):
         self.map.move_player_direction(self, direction)
