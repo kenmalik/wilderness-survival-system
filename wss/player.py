@@ -36,9 +36,16 @@ class Player(TextRenderable):
 
     def print_stats(self) -> Text:
         stats = Text()
-        stats.append(f"Strength: {self.current_strength}\n")
-        stats.append(f"Water: {self.current_water}\n")
-        stats.append(f"Food: {self.current_food}\n")
+        
+        strength_style = "red" if self.current_strength <= 10 else "default"
+        stats.append(f"Strength: {self.current_strength}\n", style=strength_style)
+
+        water_style = "red" if self.current_water <= 10 else "default"
+        stats.append(f"Water: {self.current_water}\n", style=water_style)
+        
+        food_style = "red" if self.current_food <= 10 else "default"
+        stats.append(f"Food: {self.current_food}\n", style=food_style)
+        
         stats.append(f"Gold: {self.current_gold}\n")
         return stats
 
