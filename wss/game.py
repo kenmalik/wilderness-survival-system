@@ -89,11 +89,10 @@ class Game:
         )
 
     def run(self) -> None:
-        with Live(self.layout, refresh_per_second=5, screen=True) as live:
+        with Live(self.layout, refresh_per_second=60, screen=True) as live:
             while not self.game_over:
-                time.sleep(0.5)
-
                 for player in self.players:
+                    time.sleep(0.15)
                     if player.dead:
                         continue
 
@@ -111,11 +110,11 @@ class Game:
                         self.dead_players.append(player)
                         player.dead = True
 
+                    self.update_ui()
+                    live.update(self.layout)
+
                 if len(self.dead_players) == len(self.players):
                     self.game_over = True
-
-                self.update_ui()
-                live.update(self.layout)
 
             while True: # Keep display up after game ends until interrupt
                 pass
