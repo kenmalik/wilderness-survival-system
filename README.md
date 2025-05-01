@@ -1,3 +1,5 @@
+![WSS Logo](assets/logo.png)
+
 # Wilderness Survival System
 
 ## Description
