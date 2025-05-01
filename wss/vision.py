@@ -15,6 +15,8 @@ class Vision():
     fov = [(0, 0)]
 
     def get_visible_positions(self, player: Player) -> list[tuple[int, int]]:
+        """Return valid positions on the map that a player can see"""
+
         y_limit = len(player.map.terrain)
         x_limit = len(player.map.terrain[0])
         visible_positions = [(player.y, player.x)]
