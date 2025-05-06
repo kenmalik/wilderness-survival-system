@@ -45,8 +45,7 @@ class Vision():
 
         return visible_positions
 
-    def _closestItem(self, player: Player, item_type):
-
+    def _closest_item(self, player: Player, item_type):
         visible_positions = self.get_visible_positions(player)
         candidates = []
 
@@ -65,23 +64,23 @@ class Vision():
         candidates.sort(key=lambda tup: (tup[1], tup[2], -tup[3]))
         return candidates[0][0]  # returns (y, x)
 
-    def closestFood(self, player): 
+    def closest_food(self, player): 
         from item import FoodBonus   # To avoid circular import issue
-        return self._closestItem(player, FoodBonus)
+        return self._closest_item(player, FoodBonus)
 
-    def closestWater(self, player):
+    def closest_water(self, player):
         from item import WaterBonus
-        return self._closestItem(player, WaterBonus)
+        return self._closest_item(player, WaterBonus)
 
-    def closestGold(self, player): 
+    def closest_gold(self, player): 
         from item import GoldBonus  
-        return self._closestItem(player, GoldBonus)
+        return self._closest_item(player, GoldBonus)
 
-    def closestTrader(self, player): 
+    def closest_trader(self, player): 
         from item import Trader
-        return self._closestItem(player, Trader)
+        return self._closest_item(player, Trader)
         
-    def easiestPath(self, player):
+    def easiest_path(self, player):
         visible_positions = self.get_visible_positions(player)
         candidates = []
 
