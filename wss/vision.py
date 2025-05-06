@@ -45,21 +45,56 @@ class Vision():
 
         return visible_positions
 
-    def closestFood(self):
-        pass
+    def _closest_item(self, player: Player, item_type):
+        visible_positions = self.get_visible_positions(player)
+        candidates = []
 
-    def closestWater(self):
-        pass
+        for y, x in visible_positions:
+            pos = (y, x)
+            if pos in player.map.items and isinstance(player.map.items[pos], item_type):
+                    terrain = player.map.terrain[y][x]
+                    movement_cost = terrain.MOVEMENT_COST
+                    distance = abs(y - player.y) + abs(x - player.x)
+                    candidates.append((pos, distance, movement_cost, x))  #x => eastward value
 
-    def closestGold(self):
-        pass
+        if not candidates:
+            return None
 
-    def closestTrader(self):
-        pass
+        # Sort by (1) shortest distance (2) lowest movement cost (3) furthest east
+        candidates.sort(key=lambda tup: (tup[1], tup[2], -tup[3]))
+        return candidates[0][0]  # returns (y, x)
 
-    def easiestPath(self):
-        pass
+    def closest_food(self, player): 
+        from item import FoodBonus   # To avoid circular import issue
+        return self._closest_item(player, FoodBonus)
 
+    def closest_water(self, player):
+        from item import WaterBonus
+        return self._closest_item(player, WaterBonus)
+
+    def closest_gold(self, player): 
+        from item import GoldBonus  
+        return self._closest_item(player, GoldBonus)
+
+    def closest_trader(self, player): 
+        from item import Trader
+        return self._closest_item(player, Trader)
+        
+    def easiest_path(self, player):
+        visible_positions = self.get_visible_positions(player)
+        candidates = []
+
+        for y, x in visible_positions:
+            terrain = player.map.terrain[y][x]
+            movement_cost = terrain.MOVEMENT_COST
+            candidates.append(((y, x), movement_cost, x))  # x = eastward bias  
+
+        if not candidates:
+            return None
+
+        # Sort by (1) lowest movement cost, then (2) furthest east (highest x)
+        candidates.sort(key=lambda tup: (tup[1], -tup[2]))
+        return candidates[0][0]
 
 class FocusedVision(Vision):
     fov = [(-1, 1), (0, 1), (1, 1)]
