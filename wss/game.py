@@ -34,7 +34,7 @@ class Game:
 
         map_size = self.difficulty_presets[difficulty]["map_size"]
         item_count = self.difficulty_presets[difficulty]["item_count"]
-        self.map = Map(map_size[0], map_size[1], item_count)
+        self.map = Map(map_size[0], map_size[1], item_count, difficulty)
 
         self.dead_players: list[Player] = []
         self.players: list[Player] = []

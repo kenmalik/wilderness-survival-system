@@ -1,5 +1,5 @@
 from direction import Direction
-from item import FoodBonus, GoldBonus, Item, WaterBonus
+from item import FoodBonus, GoldBonus, Item, WaterBonus, Trader
 from terrain import Plains, Desert, Mountain, Forest, Swamp, Terrain
 from player import Player
 import random
@@ -9,13 +9,11 @@ from rich.padding import Padding
 import numpy as np
 import noise
 from event import Event
-
 from listener import Listener
 
 ITEM_TYPES = (GoldBonus, FoodBonus, WaterBonus)
 
 type Point = tuple[int, int]
-
 
 class Map:
     # Procedural Generation Parameters
@@ -24,11 +22,12 @@ class Map:
     persistence = 0.6
     lacunarity = 1.5
 
-    def __init__(self, height: int, width: int, item_count: int):
+    def __init__(self, height: int, width: int, item_count: int, difficulty: str):
         self.generate_terrain(height, width)
         self.players: dict[Point, Player] = {}
         self.items: dict[Point, Item] = {}
         self.populate_items(item_count)
+        self.populate_traders(difficulty)
         self.listeners = []
 
     def draw(self) -> Panel:
@@ -165,3 +164,31 @@ class Map:
         item = self.items[position]
         item.apply_effect(player)
         self.notify(Event("item_picked_up", {"player": player, "item": item}))
+
+    DIFFICULTY_TRADERS = {
+        "Easy": 3,    # 3 traders for Easy
+        "Medium": 5,  # 5 traders for Medium
+        "Hard": 8     # 8 traders for Hard
+    }
+
+    def populate_traders(self, difficulty: str) -> None:
+        """
+        Populates the map with traders based on the difficulty level.
+        """
+        trader_count = self.DIFFICULTY_TRADERS.get(difficulty, 3)
+        map_height = len(self.terrain)
+        map_width = len(self.terrain[0])
+
+        for _ in range(trader_count):
+            location = (
+                random.randrange(map_height),
+                random.randrange(map_width),
+            )
+
+            while location in self.items or location in self.players:
+                location = (
+                    random.randrange(map_height),
+                    random.randrange(map_width),
+                )
+
+            self.items[location] = Trader(amount=random.randint(1, 5))
