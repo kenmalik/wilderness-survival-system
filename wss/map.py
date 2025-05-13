@@ -62,7 +62,33 @@ class Map:
 
     def populate_items(self, item_count) -> None:
         self.items.clear()
-        for _ in range(item_count):
+
+        total_parts = 5
+        food_count = (item_count * 2) // total_parts
+        water_count = (item_count * 2) // total_parts
+        gold_count = item_count - food_count - water_count
+
+        food_items = []
+        for _ in range(food_count):
+            amount = random.randrange(1, 4)
+            food_item = FoodBonus(amount)
+            food_items.append(food_item)
+
+        water_items = []
+        for _ in range(water_count):
+            amount = random.randrange(1, 4)
+            water_item = WaterBonus(amount)
+            water_items.append(water_item)
+
+        gold_items = []
+        for _ in range(gold_count):
+            amount = random.randrange(1, 4)
+            gold_item = GoldBonus(amount)
+            gold_items.append(gold_item)
+
+        all_items = food_items + water_items + gold_items
+
+        for item in all_items:
             location: Point = (
                 random.randrange(len(self.terrain)),
                 random.randrange(len(self.terrain[0])),
@@ -72,7 +98,7 @@ class Map:
                     random.randrange(len(self.terrain)),
                     random.randrange(len(self.terrain[0])),
                 )
-            self.items[location] = random.choice(ITEM_TYPES)(random.randrange(1, 4))
+            self.items[location] = item
 
     def place_players(self, players: list[Player]) -> None:
         for player in players:
@@ -165,6 +191,7 @@ class Map:
         item = self.items[position]
         item.apply_effect(player)
         self.notify(Event("item_picked_up", {"player": player, "item": item}))
+        del self.items[position]  # Delete the item after it's picked up
 
     DIFFICULTY_TRADERS = {
         "Easy": 3,
