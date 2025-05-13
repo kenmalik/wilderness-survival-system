@@ -1,3 +1,9 @@
+"""
+Brain module for the Wilderness Survival System.
+This module defines the AI decision-making system for players,
+including different types of brains with varying priorities.
+"""
+
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from abc import ABC, abstractmethod
@@ -12,26 +18,52 @@ logger = logging.getLogger(__name__)
 if TYPE_CHECKING:
     from player import Player
 
-VERY_LOW_STAT_THRESHOLD = 10
-LOW_STAT_THRESHOLD = 20
-CLOSE_ITEM_THRESHOLD = 2
+# Thresholds for resource management
+VERY_LOW_STAT_THRESHOLD = 10  # Critical level for resources
+LOW_STAT_THRESHOLD = 20       # Warning level for resources
+CLOSE_ITEM_THRESHOLD = 2      # Distance at which items are considered "close"
 
 
 class Brain(ABC):
+    """
+    Abstract base class for player AI brains.
+    Defines the decision-making logic for player movement and resource gathering.
+    """
     def __init__(self, player: Player):
+        """
+        Initialize a brain for a player.
+        
+        Args:
+            player (Player): The player this brain controls
+        """
         self.player = player
 
     def calculate_move(self) -> Direction:
+        """
+        Calculate the next move for the player based on current conditions.
+        
+        Priority order:
+        1. Move towards resources if any stat is very low
+        2. Move towards priority items based on brain type
+        3. Move towards any close items
+        4. Default to moving east
+        
+        Returns:
+            Direction: The direction to move in
+        """
+        # Check for critically low stats first
         very_low = self._check_very_low()
         if very_low:
             return self._calculate_direction((self.player.y, self.player.x), very_low)
 
+        # Check for priority items based on brain type
         priority_item = self._check_priority_item()
         if priority_item:
             return self._calculate_direction(
                 (self.player.y, self.player.x), priority_item
             )
 
+        # Check for any close items
         close_item = self._check_close_item()
         if close_item:
             return self._calculate_direction((self.player.y, self.player.x), close_item)
@@ -39,7 +71,13 @@ class Brain(ABC):
         return Direction.EAST  # Default move
 
     def _check_very_low(self) -> tuple[int, int] | None:
-        """Check if the player is low on any stats and return the direction to move towards the nearest item."""
+        """
+        Check if the player is low on any stats and return the direction to move
+        towards the nearest item of the needed type.
+        
+        Returns:
+            tuple[int, int] | None: Coordinates of the nearest needed item, or None
+        """
         if self.player.current_strength < VERY_LOW_STAT_THRESHOLD:
             return self.player.vision.easiest_path(self.player)
         if self.player.current_water < VERY_LOW_STAT_THRESHOLD:
@@ -49,7 +87,12 @@ class Brain(ABC):
         return None
 
     def _check_close_item(self) -> tuple[int, int] | None:
-        """Check if the player is close to any item and return the direction to move towards it."""
+        """
+        Check if the player is close to any item and return its location.
+        
+        Returns:
+            tuple[int, int] | None: Coordinates of the closest item, or None
+        """
         close_items = [
             self.player.vision.closest_gold(self.player),
             self.player.vision.closest_water(self.player),
@@ -67,12 +110,28 @@ class Brain(ABC):
 
     @abstractmethod
     def _check_priority_item(self) -> tuple[int, int] | None:
-        """Check the player's prioritized items and return the direction to move towards it."""
+        """
+        Check the player's prioritized items and return the direction to move towards it.
+        This method is implemented differently by each brain type.
+        
+        Returns:
+            tuple[int, int] | None: Coordinates of the priority item, or None
+        """
         pass
 
     def _calculate_distance(
         self, player_pos: tuple[int, int], target_pos: tuple[int, int]
     ) -> float:
+        """
+        Calculate the Euclidean distance between two points.
+        
+        Args:
+            player_pos (tuple[int, int]): Player's current position
+            target_pos (tuple[int, int]): Target position
+            
+        Returns:
+            float: Distance between the points
+        """
         dy = target_pos[0] - player_pos[0]
         dx = target_pos[1] - player_pos[1]
         return math.sqrt(dy * dy + dx * dx)
@@ -80,14 +139,25 @@ class Brain(ABC):
     def _calculate_direction(
         self, player_pos: tuple[int, int], target_pos: tuple[int, int]
     ) -> Direction:
-        """Calculate the direction to move towards a target position."""
-
+        """
+        Calculate the direction to move towards a target position.
+        Uses angle calculations to determine the closest cardinal or diagonal direction.
+        
+        Args:
+            player_pos (tuple[int, int]): Player's current position
+            target_pos (tuple[int, int]): Target position
+            
+        Returns:
+            Direction: The direction to move in
+        """
         dx = target_pos[1] - player_pos[1]
         dy = target_pos[0] - player_pos[0]
         angle = -math.atan2(dy, dx)
 
+        # Round to nearest 45-degree angle
         rounded = round(angle / (math.pi / 4)) * (math.pi / 4)
 
+        # Map angles to directions
         cardinal_directions = {
             0: Direction.EAST,
             math.pi / 4: Direction.NORTHEAST,
@@ -108,7 +178,17 @@ class Brain(ABC):
 
 
 class FoodBrain(Brain):
+    """
+    Brain type that prioritizes finding food.
+    Players with this brain will focus on gathering food resources.
+    """
     def _check_priority_item(self) -> tuple[int, int] | None:
+        """
+        Find the closest food item to the player.
+        
+        Returns:
+            tuple[int, int] | None: Coordinates of the closest food, or None
+        """
         closest_food = self.player.vision.closest_food(self.player)
         if closest_food:
             logger.debug(
@@ -118,7 +198,17 @@ class FoodBrain(Brain):
 
 
 class GoldBrain(Brain):
+    """
+    Brain type that prioritizes finding gold.
+    Players with this brain will focus on gathering gold resources.
+    """
     def _check_priority_item(self) -> tuple[int, int] | None:
+        """
+        Find the closest gold item to the player.
+        
+        Returns:
+            tuple[int, int] | None: Coordinates of the closest gold, or None
+        """
         closest_gold = self.player.vision.closest_gold(self.player)
         if closest_gold:
             logger.debug(
@@ -128,7 +218,17 @@ class GoldBrain(Brain):
 
 
 class WaterBrain(Brain):
+    """
+    Brain type that prioritizes finding water.
+    Players with this brain will focus on gathering water resources.
+    """
     def _check_priority_item(self) -> tuple[int, int] | None:
+        """
+        Find the closest water item to the player.
+        
+        Returns:
+            tuple[int, int] | None: Coordinates of the closest water, or None
+        """
         closest_water = self.player.vision.closest_water(self.player)
         if closest_water:
             logger.debug(
