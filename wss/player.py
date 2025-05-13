@@ -39,7 +39,7 @@ class Player(TextRenderable):
             "water": WaterBrain,
             "gold": GoldBrain
         }
-        self.brain = brain_map[brain_type](vision)
+        self.brain = brain_map[brain_type](self)
         self.brain_type = brain_type
 
         self.orientation = Direction.EAST
@@ -64,9 +64,17 @@ class Player(TextRenderable):
         context.append(self.icon, style="bold white on indian_red" if not self.dead else "bold black on bright_black")
 
     def move_direction(self, direction: Direction):
+        if direction == Direction.NORTH:
+            self.orientation = Direction.NORTH
+        elif direction == Direction.SOUTH:
+            self.orientation = Direction.SOUTH
+        elif direction == Direction.EAST or direction == Direction.NORTHEAST or direction == Direction.SOUTHEAST:
+            self.orientation = Direction.EAST
+        elif direction == Direction.WEST or direction == Direction.NORTHWEST or direction == Direction.SOUTHWEST:
+            self.orientation = Direction.WEST
+
         self.map.move_player_direction(self, direction)
 
     def update(self) -> None:
-        # Use the brain to decide which direction to move
-        direction = self.brain.decide_move(self)
-        self.move_direction(direction)
+        move = self.brain.calculate_move()
+        self.move_direction(move)
