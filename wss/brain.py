@@ -21,8 +21,53 @@ class Brain(ABC):
     def __init__(self, player: Player):
         self.player = player
 
-    @abstractmethod
     def calculate_move(self) -> Direction:
+        very_low = self._check_very_low()
+        if very_low:
+            return self._calculate_direction((self.player.y, self.player.x), very_low)
+
+        priority_item = self._check_priority_item()
+        if priority_item:
+            return self._calculate_direction(
+                (self.player.y, self.player.x), priority_item
+            )
+
+        close_item = self._check_close_item()
+        if close_item:
+            return self._calculate_direction((self.player.y, self.player.x), close_item)
+
+        return Direction.EAST  # Default move
+
+    def _check_very_low(self) -> tuple[int, int] | None:
+        """Check if the player is low on any stats and return the direction to move towards the nearest item."""
+        if self.player.current_strength < VERY_LOW_STAT_THRESHOLD:
+            return self.player.vision.easiest_path(self.player)
+        if self.player.current_water < VERY_LOW_STAT_THRESHOLD:
+            return self.player.vision.closest_water(self.player)
+        if self.player.current_food < VERY_LOW_STAT_THRESHOLD:
+            return self.player.vision.closest_food(self.player)
+        return None
+
+    def _check_close_item(self) -> tuple[int, int] | None:
+        """Check if the player is close to any item and return the direction to move towards it."""
+        close_items = [
+            self.player.vision.closest_gold(self.player),
+            self.player.vision.closest_water(self.player),
+            self.player.vision.closest_food(self.player),
+        ]
+
+        for item in close_items:
+            if (
+                item
+                and self._calculate_distance((self.player.y, self.player.x), item)
+                < CLOSE_ITEM_THRESHOLD
+            ):
+                return item
+        return None
+
+    @abstractmethod
+    def _check_priority_item(self) -> tuple[int, int] | None:
+        """Check the player's prioritized items and return the direction to move towards it."""
         pass
 
     def _calculate_distance(
@@ -63,65 +108,30 @@ class Brain(ABC):
 
 
 class FoodBrain(Brain):
-    def calculate_move(self) -> Direction:
+    def _check_priority_item(self) -> tuple[int, int] | None:
         closest_food = self.player.vision.closest_food(self.player)
         if closest_food:
             logger.debug(
                 f"Closest food for player {self.player.icon} at ({self.player.y}, {self.player.x}) is at {closest_food}"
             )
-            return self._calculate_direction(
-                (self.player.y, self.player.x), closest_food
-            )
-
-        closest_water = self.player.vision.closest_water(self.player)
-        if (
-            self.player.current_water < LOW_STAT_THRESHOLD
-            or closest_water
-            and self._calculate_distance((self.player.y, self.player.x), closest_water)
-            < CLOSE_ITEM_THRESHOLD
-        ):
-            if closest_water:
-                logger.debug(
-                    f"Closest water for player {self.player.icon} at ({self.player.y}, {self.player.x}) is at {closest_water}"
-                )
-                return self._calculate_direction(
-                    (self.player.y, self.player.x), closest_water
-                )
-
-        closest_gold = self.player.vision.closest_gold(self.player)
-        if (
-            closest_gold
-            and self._calculate_distance((self.player.y, self.player.x), closest_gold)
-            < CLOSE_ITEM_THRESHOLD
-        ):
-            if closest_gold:
-                logger.debug(
-                    f"Closest water for player {self.player.icon} at ({self.player.y}, {self.player.x}) is at {closest_water}"
-                )
-                return self._calculate_direction(
-                    (self.player.y, self.player.x), closest_gold
-                )
-
-        if self.player.current_strength < VERY_LOW_STAT_THRESHOLD:
-            easiest_path = self.player.vision.easiest_path(self.player)
-            if easiest_path:
-                logger.debug(
-                    f"Easiest path for player {self.player.icon} at ({self.player.y}, {self.player.x}) is at {easiest_path}"
-                )
-                return self._calculate_direction(
-                    (self.player.y, self.player.x), easiest_path
-                )
-
-        return Direction.EAST  # Default move
+            return closest_food
 
 
 class GoldBrain(Brain):
-    def calculate_move(self) -> Direction:
-        # Placeholder logic for gold-seeking behavior
-        return Direction.EAST
+    def _check_priority_item(self) -> tuple[int, int] | None:
+        closest_gold = self.player.vision.closest_gold(self.player)
+        if closest_gold:
+            logger.debug(
+                f"Closest gold for player {self.player.icon} at ({self.player.y}, {self.player.x}) is at {closest_gold}"
+            )
+            return closest_gold
 
 
 class WaterBrain(Brain):
-    def calculate_move(self) -> Direction:
-        # Placeholder logic for water-seeking behavior
-        return Direction.EAST
+    def _check_priority_item(self) -> tuple[int, int] | None:
+        closest_water = self.player.vision.closest_water(self.player)
+        if closest_water:
+            logger.debug(
+                f"Closest water for player {self.player.icon} at ({self.player.y}, {self.player.x}) is at {closest_water}"
+            )
+            return closest_water
