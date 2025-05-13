@@ -8,10 +8,14 @@ from direction import Direction
 from vision import Vision
 from brain import FoodBrain, WaterBrain, GoldBrain
 
+import logging
+
 
 if TYPE_CHECKING:
     from map import Map
 
+
+logger = logging.getLogger(__name__)
 
 class Player(TextRenderable):
     MAX_STRENGTH = 100
@@ -75,6 +79,26 @@ class Player(TextRenderable):
 
         self.map.move_player_direction(self, direction)
 
+    def _move_is_valid(self, direction: Direction) -> bool:
+        new_y = self.y + direction.value[0]
+        new_x = self.x + direction.value[1]
+
+        if self.map.players.get((new_y, new_x)) is not None:
+            logger.debug(f"Invalid move for player {self.icon} to occupied position ({new_y}, {new_x})")
+            return False
+
+        if (
+            0 <= new_y < len(self.map.terrain)
+            and 0 <= new_x < len(self.map.terrain[0])
+        ):
+            return True
+        else:
+            logger.debug(f"Invalid move for player {self.icon} out of bounds to ({new_y}, {new_x})")
+            return False
+
+
     def update(self) -> None:
         move = self.brain.calculate_move()
+        if not self._move_is_valid(move):
+            return
         self.move_direction(move)
