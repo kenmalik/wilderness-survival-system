@@ -15,6 +15,7 @@ ITEM_TYPES = (GoldBonus, FoodBonus, WaterBonus)
 
 type Point = tuple[int, int]
 
+
 class Map:
     # Procedural Generation Parameters
     scale = 0.1
@@ -166,9 +167,9 @@ class Map:
         self.notify(Event("item_picked_up", {"player": player, "item": item}))
 
     DIFFICULTY_TRADERS = {
-        "Easy": 3,    # 3 traders for Easy
-        "Medium": 5,  # 5 traders for Medium
-        "Hard": 8     # 8 traders for Hard
+        "Easy": 3,
+        "Medium": 5,
+        "Hard": 8,
     }
 
     def populate_traders(self, difficulty: str) -> None:
