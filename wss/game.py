@@ -4,42 +4,48 @@ from player import Player
 from rich.layout import Layout
 from rich.panel import Panel
 from rich.live import Live
-from direction import Direction
 from player import Player
 from event import Event
 
-import time
-
 from vision import FocusedVision
+
+import time
 
 
 class Game:
     difficulty_presets = {
         "Easy": {
             "map_size": (16, 64),
-            "item_count": 10,
+            "item_count": 30,
         },
         "Medium": {
             "map_size": (24, 96),
-            "item_count": 15,
+            "item_count": 80,
         },
         "Hard": {
             "map_size": (32, 128),
-            "item_count": 20,
+            "item_count": 100,
         },
     }
 
-    def __init__(self, difficulty: str, player_count: int):
+    def __init__(self, difficulty: str, player_count: int, player_configs: list[dict] | None = None):
         self.game_over = False
 
         map_size = self.difficulty_presets[difficulty]["map_size"]
         item_count = self.difficulty_presets[difficulty]["item_count"]
-        self.map = Map(map_size[0], map_size[1], item_count)
+        self.map = Map(map_size[0], map_size[1], item_count, difficulty)
 
         self.dead_players: list[Player] = []
         self.players: list[Player] = []
+        
+        # Use default configurations if none provided
+        if player_configs is None:
+            player_configs = [{"vision": FocusedVision(), "brain": "food"} for _ in range(player_count)]
+        
         for i in range(1, player_count + 1):
-            self.players.append(Player(str(i), self.map, FocusedVision()))
+            config = player_configs[i-1]
+            self.players.append(Player(str(i), self.map, config["vision"], config["brain"]))
+            
         self.map.place_players(self.players)
 
         self.messages = MessageBoard()
@@ -128,7 +134,7 @@ class Game:
                 self.map.populate_items(preset["item_count"])
                 self.map.generate_terrain(preset["map_size"][0], preset["map_size"][1])
                 for player in self.players:
-                    player.move_direction(Direction.EAST)
+                    player.update()
 
                 self.update_ui()
                 live.update(self.layout)
