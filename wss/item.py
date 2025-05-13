@@ -30,7 +30,9 @@ class FoodBonus(Item):
         self.amount = amount
 
     def apply_effect(self, player: Player):
-        player.current_food += self.amount
+        player.current_food = min(
+            player.current_food + self.amount, Player.MAX_FOOD
+        )
 
     def render(self, context: Text):
         context.append(self.icon, style="bold white on dark_red")
@@ -43,7 +45,9 @@ class WaterBonus(Item):
         self.amount = amount
 
     def apply_effect(self, player: Player):
-        player.current_water += self.amount
+        player.current_water = min(
+            player.current_water + self.amount, Player.MAX_WATER
+        )
 
     def render(self, context: Text):
         context.append(self.icon, style="bold white on dodger_blue3")

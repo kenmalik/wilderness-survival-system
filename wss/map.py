@@ -70,19 +70,19 @@ class Map:
 
         food_items = []
         for _ in range(food_count):
-            amount = random.randrange(1, 4)
+            amount = random.randrange(10, 50)
             food_item = FoodBonus(amount)
             food_items.append(food_item)
 
         water_items = []
         for _ in range(water_count):
-            amount = random.randrange(1, 4)
+            amount = random.randrange(10, 50)
             water_item = WaterBonus(amount)
             water_items.append(water_item)
 
         gold_items = []
         for _ in range(gold_count):
-            amount = random.randrange(1, 4)
+            amount = random.randrange(10, 50)
             gold_item = GoldBonus(amount)
             gold_items.append(gold_item)
 
