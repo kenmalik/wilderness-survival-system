@@ -6,6 +6,7 @@ from rich.text import Text
 
 from direction import Direction
 from vision import Vision
+from brain import FoodBrain
 
 
 if TYPE_CHECKING:
@@ -31,6 +32,7 @@ class Player(TextRenderable):
 
         self.map = map
         self.vision = vision
+        self.brain = FoodBrain(self)
 
         self.orientation = Direction.EAST
 
@@ -53,8 +55,18 @@ class Player(TextRenderable):
         context.append(self.icon, style="bold white on indian_red" if not self.dead else "bold black on bright_black")
 
     def move_direction(self, direction: Direction):
+        if direction == Direction.NORTH:
+            self.orientation = Direction.NORTH
+        elif direction == Direction.SOUTH:
+            self.orientation = Direction.SOUTH
+        elif direction == Direction.EAST or direction == Direction.NORTHEAST or direction == Direction.SOUTHEAST:
+            self.orientation = Direction.EAST
+        elif direction == Direction.WEST or direction == Direction.NORTHWEST or direction == Direction.SOUTHWEST:
+            self.orientation = Direction.WEST
+
         self.map.move_player_direction(self, direction)
 
     def update(self) -> None:
-        self.move_direction(Direction.EAST)
+        move = self.brain.calculate_move()
+        self.move_direction(move)
         self.vision.get_visible_positions(self) # TODO: Use visible positions in brain
