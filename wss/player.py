@@ -6,6 +6,7 @@ from rich.text import Text
 
 from direction import Direction
 from vision import Vision
+from brain import FoodBrain, WaterBrain, GoldBrain
 
 
 if TYPE_CHECKING:
@@ -17,7 +18,7 @@ class Player(TextRenderable):
     MAX_WATER = 100
     MAX_FOOD = 100
 
-    def __init__(self, icon: str, map: Map, vision: Vision):
+    def __init__(self, icon: str, map: Map, vision: Vision, brain_type: str = "food"):
         self.current_strength = self.MAX_STRENGTH // 3
         self.current_water = self.MAX_WATER // 3 
         self.current_food = self.MAX_FOOD // 3 
@@ -31,6 +32,15 @@ class Player(TextRenderable):
 
         self.map = map
         self.vision = vision
+        
+        # Initialize the appropriate brain based on brain_type
+        brain_map = {
+            "food": FoodBrain,
+            "water": WaterBrain,
+            "gold": GoldBrain
+        }
+        self.brain = brain_map[brain_type](vision)
+        self.brain_type = brain_type
 
         self.orientation = Direction.EAST
 
@@ -47,6 +57,7 @@ class Player(TextRenderable):
         stats.append(f"Food: {self.current_food}\n", style=food_style)
         
         stats.append(f"Gold: {self.current_gold}\n")
+        stats.append(f"Brain: {self.brain_type.capitalize()}\n")
         return stats
 
     def render(self, context: Text):
@@ -56,5 +67,6 @@ class Player(TextRenderable):
         self.map.move_player_direction(self, direction)
 
     def update(self) -> None:
-        self.move_direction(Direction.EAST)
-        self.vision.get_visible_positions(self) # TODO: Use visible positions in brain
+        # Use the brain to decide which direction to move
+        direction = self.brain.decide_move(self)
+        self.move_direction(direction)

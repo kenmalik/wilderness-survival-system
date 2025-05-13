@@ -29,7 +29,7 @@ class Game:
         },
     }
 
-    def __init__(self, difficulty: str, player_count: int):
+    def __init__(self, difficulty: str, player_count: int, player_configs: list[dict] = None):
         self.game_over = False
 
         map_size = self.difficulty_presets[difficulty]["map_size"]
@@ -38,8 +38,15 @@ class Game:
 
         self.dead_players: list[Player] = []
         self.players: list[Player] = []
+        
+        # Use default configurations if none provided
+        if player_configs is None:
+            player_configs = [{"vision": FocusedVision(), "brain": "food"} for _ in range(player_count)]
+        
         for i in range(1, player_count + 1):
-            self.players.append(Player(str(i), self.map, FocusedVision()))
+            config = player_configs[i-1]
+            self.players.append(Player(str(i), self.map, config["vision"], config["brain"]))
+            
         self.map.place_players(self.players)
 
         self.messages = MessageBoard()
