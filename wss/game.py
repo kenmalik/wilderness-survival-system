@@ -16,15 +16,15 @@ class Game:
     difficulty_presets = {
         "Easy": {
             "map_size": (16, 64),
-            "item_count": 30,
+            "item_count": 80,
         },
         "Medium": {
             "map_size": (24, 96),
-            "item_count": 80,
+            "item_count": 120,
         },
         "Hard": {
             "map_size": (32, 128),
-            "item_count": 100,
+            "item_count": 200,
         },
     }
 
