@@ -99,6 +99,10 @@ class Player(TextRenderable):
 
     def update(self) -> None:
         move = self.brain.calculate_move()
+        other_directions = { direction for direction in Direction if direction != move }
         if not self._move_is_valid(move):
-            return
+            for direction in other_directions:
+                if self._move_is_valid(direction):
+                    move = direction
+                    break
         self.move_direction(move)
