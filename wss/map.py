@@ -194,9 +194,9 @@ class Map:
         del self.items[position]  # Delete the item after it's picked up
 
     DIFFICULTY_TRADERS = {
-        "Easy": 3,
+        "Easy": 8,
         "Medium": 5,
-        "Hard": 8,
+        "Hard": 3,
     }
 
     def populate_traders(self, difficulty: str) -> None:
