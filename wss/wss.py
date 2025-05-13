@@ -1,6 +1,7 @@
 import sys
 from rich.prompt import IntPrompt, Prompt
 import logging
+import signal
 
 from game import Game
 from vision import Vision, FocusedVision, CautiousVision, KeenEyedVision, FarSightVision
@@ -8,31 +9,39 @@ from vision import Vision, FocusedVision, CautiousVision, KeenEyedVision, FarSig
 logger = logging.getLogger(__name__)
 
 
+def signal_handler(signum, _):
+    logger.info(f"Received signal {signum}, exiting.")
+    sys.exit(0)
+
+
+signal.signal(signal.SIGINT, signal_handler)
+
+
 def get_vision_type(player_num: int) -> Vision:
     vision_choices = {
         "1": "Focused Vision - Sees forward and diagonally",
         "2": "Cautious Vision - Sees forward and to the sides",
         "3": "Keen-Eyed Vision - Sees wider area forward",
-        "4": "Far-Sight Vision - Sees the furthest ahead"
+        "4": "Far-Sight Vision - Sees the furthest ahead",
     }
-    
+
     print(f"\nVision types for Player {player_num}:")
     for key, desc in vision_choices.items():
         print(f"{key}. {desc}")
-    
+
     choice = Prompt.ask(
         f"Select vision type for Player {player_num}",
         choices=["1", "2", "3", "4"],
-        default="1"
+        default="1",
     )
-    
+
     vision_map = {
         "1": FocusedVision,
         "2": CautiousVision,
         "3": KeenEyedVision,
-        "4": FarSightVision
+        "4": FarSightVision,
     }
-    
+
     return vision_map[choice]()
 
 
@@ -40,25 +49,21 @@ def get_brain_type(player_num: int) -> str:
     brain_choices = {
         "1": "Food Brain - Prioritizes finding food",
         "2": "Water Brain - Prioritizes finding water",
-        "3": "Gold Brain - Prioritizes finding gold"
+        "3": "Gold Brain - Prioritizes finding gold",
     }
-    
+
     print(f"\nBrain types for Player {player_num}:")
     for key, desc in brain_choices.items():
         print(f"{key}. {desc}")
-    
+
     choice = Prompt.ask(
         f"Select brain type for Player {player_num}",
         choices=["1", "2", "3"],
-        default="1"
+        default="1",
     )
-    
-    brain_map = {
-        "1": "food",
-        "2": "water",
-        "3": "gold"
-    }
-    
+
+    brain_map = {"1": "food", "2": "water", "3": "gold"}
+
     return brain_map[choice]
 
 
