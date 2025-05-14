@@ -32,6 +32,24 @@ class MessageBoard(Listener):
             player = event.data["player"]
             self.message_stack.append(f"Player {player.icon} died!")
             
+        if event.type == "trade":
+            player = event.data["player"]
+            item_given = event.data["item_given"]
+            item_received = event.data["item_received"]
+            self.message_stack.append(f"Player {player.icon}: traded {item_given.icon} for {item_received.icon}")
+            
+        if event.type == "trader_offer":
+            player = event.data["player"]
+            item_given = event.data["item_given"]
+            item_received = event.data["item_received"]
+            self.message_stack.append(f"Player {player.icon}: The Trader offers your {item_given.icon} for their {item_received.icon}")
+            
+        if event.type == "player_offer":
+            player = event.data["player"]
+            item_given = event.data["item_given"]
+            item_received = event.data["item_received"]
+            self.message_stack.append(f"Player {player.icon}: offered {item_given.icon} for the Traders {item_received.icon}")    
+        
         if len(self.message_stack) > 10:
             self.message_stack = self.message_stack[-10:]
 
