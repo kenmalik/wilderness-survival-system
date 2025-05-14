@@ -61,12 +61,8 @@ class Trader(Item):
         self.amount = amount
 
     def apply_effect(self, player: Player):
-        player.current_water = min(
-            player.current_water + self.amount, Player.MAX_WATER
-        )
-        player.current_food = min(
-            player.current_food + self.amount, Player.MAX_FOOD
-        )
+        
+        
         
     def trade(self, player_modifier: int, trader_modifier: int) -> bool:
         player_roll = random.randint(1,20) + player_modifier
@@ -86,61 +82,105 @@ class FairTrader(Trader):
     def trader_trade(self, player: Player):
         give, take = random.sample(["gold", "water", "food"], 2)
         num_traded = random.randint(5, 15)
+        #event offer
         #Trader giving gold
         if(give == "gold" ):
             if(take == "water"):
                 if(num_traded >= player.current_water):
-                    if(super.trade(num_traded*-1, 0)):
-                        #event stuff
+                    if(self.trade(num_traded*-1, 0)):
+                        player.current_gold = player.current_gold + num_traded 
+                        player.current_water = player.current_water - num_traded
                         self.num_trades+= 1
+                        #accept
                     else:
                         #decline
                         self.num_trades+= 1
             elif(take == "food"):
                 if(num_traded >= player.current_):
                     if(self.trade(num_traded*-1, 0)):
-                        #event stuff
+                        player.current_gold = player.current_gold + num_traded
+                        player.current_food = player.current_food - num_traded
                         self.num_trades+= 1
+                        #accept
                     else:
                         #decline
                         self.num_trades+= 1
         #Trader giving water
-        if(give == "water"):
+        elif(give == "water"):
             if(take == "food"):
                 if(num_traded >= player.current_food and player.current_food > player.current_water*2):
                     if(self.trade(0, 0)):
-                        #event stuff
+                        player.current_water = min(
+                            player.current_water + self.amount, Player.MAX_WATER
+                        )
+                        player.current_food = player.current_food - num_traded
                         self.num_trades+= 1
+                        #accept
                     else:
                         #decline
                         self.num_trades+= 1
-            elif(take== "gold"):
+            elif(take == "gold"):
                 if(num_traded >= player.current_gold):
                     if(self.trade(0, 0)):
-                        #event stuff
+                        player.current_water = min(
+                            player.current_water + self.amount, Player.MAX_WATER
+                        )
                         self.num_trades+= 1
                     else:
                         #decline
                         self.num_trades+= 1
         #Trader giving food
-        if(give == "food"):
+        elif(give == "food"):
             if(take == "water"):
                 if(num_traded >= player.current_water and player.current_water > player.current_food*2):
                     if(self.trade(0, 0)):
-                        #event stuff
+                        player.current_food = min(
+                            player.current_food + self.amount, Player.MAX_FOOD
+                        )
+                        player.current_water = player.current_water - num_traded
                         self.num_trades+= 1
                     else:
                         #decline
                         self.num_trades+= 1
             elif(take == "gold"):
                 if(num_traded >= player.current_gold):
-                    if(super.trade(0, 0)):
-                        #event stuff
+                    if(self.trade(0, 0)):
+                        player.current_food = min(
+                            player.current_food + self.amount, Player.MAX_FOOD
+                        )
+                        player.current_gold = player.current_gold - num_traded
                         self.num_trades+= 1
                     else:
                         #decline
                         self.num_trades+= 1
                         
+    def player_trade(self, player: Player):
+        if(player.current_gold == 0):
+            return
+        num_traded = min(player.current_gold, random.randint(5, 15))
+        if(player.current_food < player.current_water):
+            if(self.trade(0,0)):
+                player.current_water = min(
+                    player.current_food + num_traded, Player.MAX_FOOD
+                )
+                player.current_gold = player.current_gold - num_traded
+                self.num_trades += 1
+                #accept
+            else:
+                self.num_trades += 1
+                #decline
+        else:
+            if(self.trade(0,0)):
+                player.current_water = min(
+                    player.current_water + num_traded, Player.MAX_WATER
+                )
+                player.current_gold = player.current_gold - num_traded
+                self.num_trades += 1
+                #accept
+            else:
+                self.num_trades += 1
+                #decline
+            
         
                 
         

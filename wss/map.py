@@ -220,3 +220,5 @@ class Map:
                 )
 
             self.items[location] = Trader(amount=random.randint(1, 5))
+            
+    
