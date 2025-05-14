@@ -81,19 +81,50 @@ class Vision():
         return self._closest_item(player, Trader)
         
     def easiest_path(self, player):
-        visible_positions = self.get_visible_positions(player)
+        """
+        Find the easiest adjacent tile to move to, based on terrain movement cost.
+        Preference is given to lower movement cost and more eastward tiles.
+
+        Args:
+            player (Player): The player choosing where to move
+
+        Returns:
+            tuple[int, int] | None: Coordinates of the best adjacent tile to move to, or None if none available
+        """
+
+        y = player.y
+        x = player.x
+        map_height = len(player.map.terrain)
+        map_width = len(player.map.terrain[0])
+
         candidates = []
 
-        for y, x in visible_positions:
-            terrain = player.map.terrain[y][x]
-            movement_cost = terrain.MOVEMENT_COST
-            candidates.append(((y, x), movement_cost, x))  # x = eastward bias  
+        # Check tile to the north
+        if y > 0:
+            cost = player.map.terrain[y - 1][x].MOVEMENT_COST
+            candidates.append(((y - 1, x), cost, x))  # x is used to prefer eastward
+
+        # Check tile to the south
+        if y < map_height - 1:
+            cost = player.map.terrain[y + 1][x].MOVEMENT_COST
+            candidates.append(((y + 1, x), cost, x))
+
+        # Check tile to the west
+        if x > 0:
+            cost = player.map.terrain[y][x - 1].MOVEMENT_COST
+            candidates.append(((y, x - 1), cost, x - 1))
+
+        # Check tile to the east
+        if x < map_width - 1:
+            cost = player.map.terrain[y][x + 1].MOVEMENT_COST
+            candidates.append(((y, x + 1), cost, x + 1))
 
         if not candidates:
             return None
 
-        # Sort by (1) lowest movement cost, then (2) furthest east (highest x)
-        candidates.sort(key=lambda tup: (tup[1], -tup[2]))
+        # Sort by: (1) lowest movement cost, (2) highest x
+        candidates.sort(key=lambda c: (c[1], -c[2]))
+
         return candidates[0][0]
 
 class FocusedVision(Vision):
