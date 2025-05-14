@@ -1,5 +1,5 @@
 from direction import Direction
-from item import FoodBonus, GoldBonus, Item, WaterBonus, Trader
+from item import FoodBonus, GoldBonus, Item, WaterBonus, Trader, FairTrader
 from terrain import Plains, Desert, Mountain, Forest, Swamp, Terrain
 from player import Player
 import random
@@ -194,9 +194,9 @@ class Map:
         del self.items[position]  # Delete the item after it's picked up
 
     DIFFICULTY_TRADERS = {
-        "Easy": 8,
-        "Medium": 5,
-        "Hard": 3,
+        "Easy": 5,
+        "Medium": 8,
+        "Hard": 100,
     }
 
     def populate_traders(self, difficulty: str) -> None:
@@ -219,6 +219,7 @@ class Map:
                     random.randrange(map_width),
                 )
 
-            self.items[location] = Trader(amount=random.randint(1, 5))
+            
+            self.items[location] = FairTrader()
             
     
