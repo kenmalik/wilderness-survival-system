@@ -5,6 +5,7 @@ import signal
 
 from game import Game
 from vision import Vision, FocusedVision, CautiousVision, KeenEyedVision, FarSightVision
+from brain import FoodBrain, WaterBrain, GoldBrain
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +63,7 @@ def get_brain_type(player_num: int) -> str:
         default="1",
     )
 
-    brain_map = {"1": "food", "2": "water", "3": "gold"}
+    brain_map = {"1": FoodBrain, "2": WaterBrain, "3": GoldBrain}
 
     return brain_map[choice]
 
