@@ -10,6 +10,8 @@ from player import Player
 from rich.layout import Layout
 from rich.panel import Panel
 from rich.live import Live
+from rich.text import Text
+from rich.align import Align
 from player import Player
 from event import Event
 
@@ -139,10 +141,12 @@ class Game:
         Main game loop. Handles player turns, game state updates, and UI rendering.
         Game continues until all players are dead or a player reaches the end.
         """
-        with Live(self.layout, refresh_per_second=60, screen=True) as live:
+        with Live(self.layout, refresh_per_second=30, screen=True) as live:
+            winner = None
+
             while not self.game_over:
                 for player in self.players:
-                    time.sleep(0.15)  # Add slight delay between player turns
+                    time.sleep(0.1)  # Add slight delay between player turns
                     if player.dead:
                         continue
 
@@ -151,6 +155,7 @@ class Game:
                     # Check if player reached the end
                     if player.x == len(self.map.terrain[0]) - 1:
                         self.game_over = True
+                        winner = player
 
                     # Check if player died from resource depletion
                     if (
@@ -169,5 +174,13 @@ class Game:
                 if len(self.dead_players) == len(self.players):
                     self.game_over = True
 
-            while True: # Keep display up after game ends until interrupt
-                pass
+            if winner:
+                message = Text(f"Player {winner.icon} wins!", style="bold green")
+            else:
+                message = Text("All players are dead!", style="bold red")
+
+            message_visible = True
+            while True:
+                live.update(Layout(Panel(Align(message, align="center", vertical="middle") if message_visible else "", title="Game Over")))
+                time.sleep(0.8)
+                message_visible = not message_visible
