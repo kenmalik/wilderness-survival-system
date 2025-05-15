@@ -30,9 +30,3 @@ simply run the following command:
 ```
 python wss.py
 ```
-
-To demo the procedural map generation, use the following:
-
-```
-python wss.py --demo-terrain
-```
