@@ -1,3 +1,9 @@
+"""
+Main game module for the Wilderness Survival System.
+This module handles the core game logic, including game state, player management,
+and UI rendering.
+"""
+
 from message_board import MessageBoard
 from map import Map
 from player import Player
@@ -13,28 +19,46 @@ import time
 
 
 class Game:
+    """
+    Main game class that manages the game state, players, and UI.
+    
+    The game is a wilderness survival simulation where players must navigate
+    through terrain, manage resources, and survive until reaching the end.
+    """
+    
+    # Predefined difficulty levels with corresponding map sizes and item counts
     difficulty_presets = {
         "Easy": {
-            "map_size": (16, 64),
-            "item_count": 80,
+            "map_size": (16, 64),    # Width: 16, Height: 64
+            "item_count": 80,        # Number of items to spawn
         },
         "Medium": {
-            "map_size": (24, 96),
-            "item_count": 120,
+            "map_size": (24, 96),    # Width: 24, Height: 96
+            "item_count": 120,       # Number of items to spawn
         },
         "Hard": {
-            "map_size": (32, 128),
-            "item_count": 200,
+            "map_size": (32, 128),   # Width: 32, Height: 128
+            "item_count": 200,       # Number of items to spawn
         },
     }
 
     def __init__(self, difficulty: str, player_count: int, player_configs: list[dict] | None = None):
+        """
+        Initialize a new game instance.
+        
+        Args:
+            difficulty (str): Game difficulty level ("Easy", "Medium", "Hard")
+            player_count (int): Number of players in the game
+            player_configs (list[dict], optional): Custom player configurations
+        """
         self.game_over = False
 
+        # Initialize map based on difficulty settings
         map_size = self.difficulty_presets[difficulty]["map_size"]
         item_count = self.difficulty_presets[difficulty]["item_count"]
         self.map = Map(map_size[0], map_size[1], item_count, difficulty)
 
+        # Initialize player lists
         self.dead_players: list[Player] = []
         self.players: list[Player] = []
         
@@ -42,12 +66,14 @@ class Game:
         if player_configs is None:
             player_configs = [{"vision": FocusedVision(), "brain": "food"} for _ in range(player_count)]
         
+        # Create players with their configurations
         for i in range(1, player_count + 1):
             config = player_configs[i-1]
             self.players.append(Player(str(i), self.map, config["vision"], config["brain"]))
             
         self.map.place_players(self.players)
 
+        # Initialize message board and UI
         self.messages = MessageBoard()
         self.map.register_listener(self.messages)
 
@@ -56,21 +82,36 @@ class Game:
 
     @classmethod
     def make_ui(cls):
+        """
+        Create the game's UI layout using Rich library.
+        
+        Returns:
+            Layout: A Rich layout object containing the game's UI structure
+        """
         layout = Layout()
         layout.split_column(
-            Layout(name="map"),
-            Layout(name="info"),
+            Layout(name="map"),      # Main game map
+            Layout(name="info"),     # Information panel
         )
         layout["map"].ratio = 4
         layout["info"].split_row(
-            Layout(name="messages"),
-            Layout(name="stats"),
+            Layout(name="messages"), # Message display
+            Layout(name="stats"),    # Player statistics
         )
         layout["info"]["stats"].ratio = 2
         return layout
 
     @classmethod
     def get_player_stat_panels(cls, players: list[Player]):
+        """
+        Generate Rich panels displaying player statistics.
+        
+        Args:
+            players (list[Player]): List of players to generate stats for
+            
+        Returns:
+            list[Panel]: List of Rich panels containing player statistics
+        """
         panels: list[Panel] = []
         for player in players:
             title = f"Player {player.icon}"
@@ -86,6 +127,9 @@ class Game:
         return panels
 
     def update_ui(self) -> None:
+        """
+        Update all UI components with current game state.
+        """
         self.layout["map"].update(self.map.draw())
         self.layout["info"]["messages"].update(
             Panel(self.messages.render(), title="Messages")
@@ -95,18 +139,24 @@ class Game:
         )
 
     def run(self) -> None:
+        """
+        Main game loop. Handles player turns, game state updates, and UI rendering.
+        Game continues until all players are dead or a player reaches the end.
+        """
         with Live(self.layout, refresh_per_second=60, screen=True) as live:
             while not self.game_over:
                 for player in self.players:
-                    time.sleep(0.15)
+                    time.sleep(0.15)  # Add slight delay between player turns
                     if player.dead:
                         continue
 
                     player.update()
 
+                    # Check if player reached the end
                     if player.x == len(self.map.terrain[0]) - 1:
                         self.game_over = True
 
+                    # Check if player died from resource depletion
                     if (
                         player.current_strength <= 0
                         or player.current_food <= 0
@@ -119,6 +169,7 @@ class Game:
                     self.update_ui()
                     live.update(self.layout)
 
+                # Check if all players are dead
                 if len(self.dead_players) == len(self.players):
                     self.game_over = True
 
@@ -126,6 +177,10 @@ class Game:
                 pass
 
     def demo_terrain(self) -> None:
+        """
+        Run a terrain generation demo, showing different map configurations.
+        Useful for testing and demonstration purposes.
+        """
         preset = self.difficulty_presets["Hard"]
         with Live(self.layout, refresh_per_second=5, screen=True) as live:
             for _ in range(25):
