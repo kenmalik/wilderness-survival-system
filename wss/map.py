@@ -5,7 +5,7 @@ and player movement mechanics.
 """
 
 from direction import Direction
-from item import FoodBonus, GoldBonus, Item, WaterBonus, Trader
+from item import FoodBonus, GoldBonus, Item, WaterBonus, Trader, FairTrader, HagglingTrader
 from terrain import Plains, Desert, Mountain, Forest, Swamp, Terrain
 from player import Player
 import random
@@ -322,13 +322,14 @@ class Map:
         item = self.items[position]
         item.apply_effect(player)
         self.notify(Event("item_picked_up", {"player": player, "item": item}))
-        del self.items[position]  # Delete the item after it's picked up
+        if not isinstance(item, Trader):
+            del self.items[position]  # Delete the item after it's picked up
 
     # Number of traders to place based on difficulty
     DIFFICULTY_TRADERS = {
-        "Easy": 3,
-        "Medium": 5,
-        "Hard": 8,
+        "Easy": 10,
+        "Medium": 20,
+        "Hard": 30,
     }
 
     def populate_traders(self, difficulty: str) -> None:
@@ -355,4 +356,7 @@ class Map:
                     random.randrange(map_width),
                 )
 
-            self.items[location] = Trader(amount=random.randint(1, 5))
+            
+            self.items[location] = random.choice([FairTrader(), HagglingTrader()])
+            
+    
