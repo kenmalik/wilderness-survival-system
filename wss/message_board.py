@@ -42,7 +42,7 @@ class MessageBoard(Listener):
             player = event.data["player"]
             item = event.data["item"]
             self.message_stack.append(
-                f"Player {player.icon}: picked up some {item.icon}"
+                f"Player {player.icon}: {item} found!"
             )
 
         # Handle terrain change events
