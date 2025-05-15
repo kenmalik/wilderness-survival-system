@@ -12,7 +12,7 @@ from rich.text import Text
 
 from direction import Direction
 from vision import Vision
-from brain import FoodBrain, WaterBrain, GoldBrain
+from brain import Brain, FoodBrain, WaterBrain, GoldBrain
 
 import logging
 
@@ -39,7 +39,7 @@ class Player(TextRenderable):
     MAX_WATER = 100
     MAX_FOOD = 100
 
-    def __init__(self, icon: str, map: Map, vision: Vision, brain_type: str = "food"):
+    def __init__(self, icon: str, map: Map, vision: Vision):
         """
         Initialize a new player.
         
@@ -66,16 +66,19 @@ class Player(TextRenderable):
         self.vision = vision
         
         # Initialize the appropriate brain based on brain_type
-        brain_map = {
-            "food": FoodBrain,
-            "water": WaterBrain,
-            "gold": GoldBrain
-        }
-        self.brain = brain_map[brain_type](self)
-        self.brain_type = brain_type
+        self.brain = None
 
         # Player starts facing east
         self.orientation = Direction.EAST
+
+    def set_brain(self, brain: Brain) -> None:
+        """
+        Set the brain for the player.
+
+        Args:
+            brain (Brain): The brain instance to be assigned to the player
+        """
+        self.brain = brain
 
     def print_stats(self) -> Text:
         """
@@ -97,7 +100,6 @@ class Player(TextRenderable):
         stats.append(f"Food: {self.current_food}\n", style=food_style)
         
         stats.append(f"Gold: {self.current_gold}\n")
-        stats.append(f"Brain: {self.brain_type.capitalize()}\n")
         return stats
 
     def render(self, context: Text):
