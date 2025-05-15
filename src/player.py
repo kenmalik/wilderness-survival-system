@@ -101,6 +101,12 @@ class Player(TextRenderable):
         stats.append(f"Food: {self.current_food}\n", style=food_style)
 
         stats.append(f"Gold: {self.current_gold}\n")
+
+        stats.append(f"\nLocation: ({self.x}, {len(self.map.terrain) - self.y})\n")
+
+        progress = self.x / len(self.map.terrain[0])
+        stats.append(f"Eastward Progress: {progress:.1%}\n")
+
         return stats
 
     def render(self, context: Text):
@@ -147,9 +153,7 @@ class Player(TextRenderable):
         self.map.move_player_direction(self, direction)
 
     def rest(self) -> None:
-        self.current_strength = min(
-            self.current_strength + 5, self.MAX_STRENGTH
-        )
+        self.current_strength = min(self.current_strength + 5, self.MAX_STRENGTH)
         self.map.apply_terrain_effects(
             self,
             self.map.terrain[self.y][self.x],

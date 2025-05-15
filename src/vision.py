@@ -181,6 +181,15 @@ class FocusedVision(Vision):
     """
     fov = [(-1, 1), (0, 1), (1, 1)]  # Forward-facing triangle pattern
 
+    def __str__(self) -> str:
+        """
+        String representation of the FocusedVision class.
+        
+        Returns:
+            str: Class name
+        """
+        return "Focused Vision"
+
 
 class CautiousVision(Vision):
     """
@@ -188,6 +197,15 @@ class CautiousVision(Vision):
     Can see forward and slightly to the side, avoiding blind spots.
     """
     fov = [(-1, 0), (0, 1), (1, 1)]  # Forward and side vision
+
+    def __str__(self) -> str:
+        """
+        String representation of the CautiousVision class.
+        
+        Returns:
+            str: Class name
+        """
+        return "Cautious Vision"
 
 
 class KeenEyedVision(Vision):
@@ -197,6 +215,15 @@ class KeenEyedVision(Vision):
     """
     fov = [(-1, 0), (-1, 1), (0, 1), (0, 2), (1, 0), (1, 1)]  # Wider forward vision
 
+    def __str__(self) -> str:
+        """
+        String representation of the KeenEyedVision class.
+        
+        Returns:
+            str: Class name
+        """
+        return "Keen Eyed Vision"
+
 
 class FarSightVision(Vision):
     """
@@ -204,3 +231,12 @@ class FarSightVision(Vision):
     Can see far ahead and to the sides in a wide pattern.
     """
     fov = [(-2, 0), (-2, 1), (-1, 0), (-1, 1), (-1, 2), (0, 1), (0,2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1)]  # Long-range vision
+
+    def __str__(self) -> str:
+        """
+        String representation of the FarSightVision class.
+        
+        Returns:
+            str: Class name
+        """
+        return "Far Sight Vision"
