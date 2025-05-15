@@ -186,7 +186,6 @@ class Brain(ABC):
         return direction
 
 
-
 class FoodBrain(Brain):
     """
     Brain type that prioritizes finding food.
@@ -206,6 +205,15 @@ class FoodBrain(Brain):
                 f"Closest food for player {self.player.icon} at ({self.player.y}, {self.player.x}) is at {closest_food}"
             )
             return closest_food
+
+    def __str__(self) -> str:
+        """
+        String representation of the FoodBrain class.
+
+        Returns:
+            str: Class name
+        """
+        return "Food Brain"
 
 
 class GoldBrain(Brain):
@@ -228,6 +236,15 @@ class GoldBrain(Brain):
             )
             return closest_gold
 
+    def __str__(self) -> str:
+        """
+        String representation of the GoldBrain class.
+
+        Returns:
+            str: Class name
+        """
+        return "Gold Brain"
+
 
 class WaterBrain(Brain):
     """
@@ -248,3 +265,12 @@ class WaterBrain(Brain):
                 f"Closest water for player {self.player.icon} at ({self.player.y}, {self.player.x}) is at {closest_water}"
             )
             return closest_water
+
+    def __str__(self) -> str:
+        """
+        String representation of the WaterBrain class.
+
+        Returns:
+            str: Class name
+        """
+        return "Water Brain"

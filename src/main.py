@@ -1,5 +1,8 @@
 import sys
 from rich.prompt import IntPrompt, Prompt
+from rich.columns import Columns
+from rich.panel import Panel
+from rich import print
 import logging
 import signal
 
@@ -86,6 +89,38 @@ def get_difficulty() -> str:
 
     return difficulty_choices[choice]
 
+def get_default_configs(player_count: int) -> list[dict]:
+    """
+    Get default configurations for players based on the number of players.
+    
+    Args:
+        player_count (int): Number of players in the game.
+        
+    Returns:
+        list[dict]: List of dictionaries containing default configurations for each player.
+    """
+    default_configs: list[dict] = []
+    for _ in range(1, player_count + 1):
+        default_configs.append({
+            "vision": FocusedVision(),
+            "brain": FoodBrain,
+        })
+    return default_configs
+
+def confirm_configuration(player_configs: list[dict]) -> bool:
+    """
+    Confirm the player configurations with the user.
+    
+    Args:
+        player_configs (list[dict]): List of player configurations to confirm.
+        
+    Returns:
+        bool: True if the configuration is confirmed, False otherwise.
+    """
+    print("\nCurrent player configurations:")
+    config_display = [ Panel(f"{config['vision']}\n{config['brain'].__name__}", title=f"Player {i+1}") for i, config in enumerate(player_configs) ]
+    print(Columns(config_display, equal=True))
+    return Prompt.ask("Is this configuration okay?", choices=["y", "n"], default="y") == "y"
 
 def main():
     logging.basicConfig(filename="wss.log", level=logging.DEBUG)
@@ -94,18 +129,21 @@ def main():
     difficulty = get_difficulty()
     player_count = int(
         IntPrompt.ask(
-            "How many players?",
+            "\nHow many players?",
             choices=["1", "2", "3", "4"],
             default="2",
         )
     )
 
     # Get player customizations
-    player_configs = []
-    for i in range(1, player_count + 1):
-        vision = get_vision_type(i)
-        brain = get_brain_type(i)
-        player_configs.append({"vision": vision, "brain": brain})
+    player_configs = get_default_configs(player_count)
+    config_ok = confirm_configuration(player_configs)
+
+    while not config_ok:
+        for i in range(player_count):
+            player_configs[i]["vision"] = get_vision_type(i + 1)
+            player_configs[i]["brain"] = get_brain_type(i + 1)
+        config_ok = confirm_configuration(player_configs)
 
     game = Game(difficulty, player_count, player_configs)
     game.run()
