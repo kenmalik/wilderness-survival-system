@@ -120,7 +120,7 @@ class Game:
                 title += " Stats"
 
             panels.append(
-                Panel(player.print_stats(), title=title)
+                Panel(player.print_stats(), title=title, border_style="grey53" if player.dead else "none")
             )
         return panels
 
