@@ -6,6 +6,8 @@ and provides string representations for each direction.
 
 from enum import Enum
 
+import math
+
 
 class Direction(Enum):
     """
@@ -32,3 +34,20 @@ class Direction(Enum):
         Returns the name of the direction in a human-readable format.
         """
         return self.name.capitalize()
+
+def angle_to_direction(angle: float) -> Direction:
+    # Round to nearest 45-degree angle
+    rounded = round(angle / (math.pi / 4)) % len(Direction)
+
+    cardinal_directions = [
+        Direction.EAST,
+        Direction.NORTHEAST,
+        Direction.NORTH,
+        Direction.NORTHWEST,
+        Direction.WEST,
+        Direction.SOUTHWEST,
+        Direction.SOUTH,
+        Direction.SOUTHEAST,
+    ]
+
+    return cardinal_directions[rounded]
