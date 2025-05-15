@@ -171,21 +171,3 @@ class Game:
 
             while True: # Keep display up after game ends until interrupt
                 pass
-
-    def demo_terrain(self) -> None:
-        """
-        Run a terrain generation demo, showing different map configurations.
-        Useful for testing and demonstration purposes.
-        """
-        preset = self.difficulty_presets["Hard"]
-        with Live(self.layout, refresh_per_second=5, screen=True) as live:
-            for _ in range(25):
-                time.sleep(0.5)
-
-                self.map.populate_items(preset["item_count"])
-                self.map.generate_terrain(preset["map_size"][0], preset["map_size"][1])
-                for player in self.players:
-                    player.update()
-
-                self.update_ui()
-                live.update(self.layout)

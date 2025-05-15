@@ -94,11 +94,7 @@ def main():
         player_configs.append({"vision": vision, "brain": brain})
 
     game = Game(difficulty, player_count, player_configs)
-
-    if len(sys.argv) > 1 and sys.argv[1] == "--demo-terrain":
-        game.demo_terrain()
-    else:
-        game.run()
+    game.run()
 
     logger.info("Finished")
 
