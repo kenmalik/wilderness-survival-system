@@ -83,12 +83,12 @@ class Brain(ABC):
         Returns:
             tuple[int, int] | None: Coordinates of the nearest needed item, or None
         """
-        if self.player.current_strength < VERY_LOW_STAT_THRESHOLD:
-            return self.player.vision.easiest_path(self.player)
         if self.player.current_water < VERY_LOW_STAT_THRESHOLD:
             return self.player.vision.closest_water(self.player)
         if self.player.current_food < VERY_LOW_STAT_THRESHOLD:
             return self.player.vision.closest_food(self.player)
+        if self.player.current_gold > LOW_STAT_THRESHOLD:
+            return self.player.vision.closest_trader(self.player)
         return None
 
     def _check_close_item(self) -> tuple[int, int] | None:

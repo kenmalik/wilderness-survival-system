@@ -12,7 +12,7 @@ from rich.text import Text
 
 from direction import Direction
 from vision import Vision
-from brain import Brain, FoodBrain, WaterBrain, GoldBrain
+from brain import Brain
 
 import logging
 
@@ -146,6 +146,16 @@ class Player(TextRenderable):
 
         self.map.move_player_direction(self, direction)
 
+    def rest(self) -> None:
+        self.current_strength = min(
+            self.current_strength + 5, self.MAX_STRENGTH
+        )
+        self.map.apply_terrain_effects(
+            self,
+            self.map.terrain[self.y][self.x],
+            self.map.terrain[self.y][self.x],
+        )
+
     def _move_is_valid(self, direction: Direction) -> bool:
         """
         Check if a move in the given direction is valid.
@@ -187,14 +197,7 @@ class Player(TextRenderable):
 
         match action.type:
             case "rest":
-                self.current_strength = min(
-                    self.current_strength + 5, self.MAX_STRENGTH
-                )
-                self.map.apply_terrain_effects(
-                    self,
-                    self.map.terrain[self.y][self.x],
-                    self.map.terrain[self.y][self.x],
-                )
+                self.rest()
             case "move":
                 direction = action.data["direction"]
 
@@ -203,11 +206,28 @@ class Player(TextRenderable):
                     direction for direction in Direction if direction != action
                 }
                 if not self._move_is_valid(direction):
+                    valid_move_found = False
                     for alternative in other_directions:
                         if self._move_is_valid(direction):
+                            valid_move_found = True
                             direction = alternative
                             break
+                    if not valid_move_found:
+                        logger.debug(
+                            f"Player {self.icon} cannot move in any direction. Resting."
+                        )
+                        self.rest()
+                        return
 
                 self.move_direction(direction)
             case _:
                 raise ValueError(f"Unknown action type: {action.type}")
+
+    def __repr__(self) -> str:
+        """
+        String representation of the player.
+
+        Returns:
+            str: Player object information
+        """
+        return f"Player(icon={self.icon}, strength={self.current_strength}, water={self.current_water}, food={self.current_food}, gold={self.current_gold}, position=({self.y}, {self.x}), dead={self.dead})"
