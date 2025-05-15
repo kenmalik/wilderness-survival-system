@@ -67,17 +67,37 @@ def get_brain_type(player_num: int) -> str:
 
     return brain_map[choice]
 
+def get_difficulty() -> str:
+    difficulty_choices = {
+        "1": "Easy - Basic gameplay with fewer challenges",
+        "2": "Medium - Balanced gameplay with moderate challenges",
+        "3": "Hard - Advanced gameplay with maximum challenges",
+    }
+
+    print("Difficulty levels:")
+    for key, desc in difficulty_choices.items():
+        print(f"{key}. {desc}")
+
+    choice = Prompt.ask(
+        "Select difficulty level",
+        choices=["1", "2", "3"],
+        default="2",
+    )
+
+    difficulty_map = {
+        "1": "Easy",
+        "2": "Medium",
+        "3": "Hard",
+    }
+
+    return difficulty_map[choice]
+
 
 def main():
     logging.basicConfig(filename="wss.log", level=logging.DEBUG)
     logger.info("Started")
 
-    difficulty = Prompt.ask(
-        "Enter preferred difficulty",
-        choices=["Easy", "Medium", "Hard"],
-        default="Hard",
-        case_sensitive=False,
-    )
+    difficulty = get_difficulty()
     player_count = int(
         IntPrompt.ask(
             "How many players?",
