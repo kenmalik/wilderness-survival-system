@@ -7,7 +7,7 @@ what players can see on the map and how they perceive their surroundings.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from direction import Direction, direction_strings
+from direction import Direction
 
 if TYPE_CHECKING:
     from player import Player
@@ -61,7 +61,7 @@ class Vision():
             ):
                 visible_positions.append((player.y + dy, player.x + dx))
 
-        logger.debug(f"Player {player.icon} at ({player.y}, {player.x}), facing {direction_strings[player.orientation]}, sees {visible_positions}")
+        logger.debug(f"Player {player.icon} at ({player.y}, {player.x}), facing {player.orientation}, sees {visible_positions}")
 
         return visible_positions
 

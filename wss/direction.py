@@ -26,16 +26,9 @@ class Direction(Enum):
     WEST = (0, -1)       # Move left
     NORTHWEST = (-1, -1) # Move up and left
 
-
-# Dictionary mapping Direction enum values to their string representations
-# Used for displaying direction names in messages and UI
-direction_strings = {
-    Direction.NORTH: "North",
-    Direction.NORTHEAST: "Northeast",
-    Direction.EAST: "East",
-    Direction.SOUTHEAST: "Southeast",
-    Direction.SOUTH: "South",
-    Direction.SOUTHWEST: "Southwest",
-    Direction.WEST: "West",
-    Direction.NORTHWEST: "Northwest",
-}
+    def __str__(self):
+        """
+        String representation of the direction.
+        Returns the name of the direction in a human-readable format.
+        """
+        return self.name.capitalize()
