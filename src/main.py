@@ -69,9 +69,9 @@ def get_brain_type(player_num: int) -> str:
 
 def get_difficulty() -> str:
     difficulty_choices = {
-        "1": "Easy - Basic gameplay with fewer challenges",
-        "2": "Medium - Balanced gameplay with moderate challenges",
-        "3": "Hard - Advanced gameplay with maximum challenges",
+        "1": "Easy",
+        "2": "Medium",
+        "3": "Hard",
     }
 
     print("Difficulty levels:")
@@ -84,13 +84,7 @@ def get_difficulty() -> str:
         default="2",
     )
 
-    difficulty_map = {
-        "1": "Easy",
-        "2": "Medium",
-        "3": "Hard",
-    }
-
-    return difficulty_map[choice]
+    return difficulty_choices[choice]
 
 
 def main():
