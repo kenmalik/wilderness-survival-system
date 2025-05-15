@@ -29,7 +29,7 @@ def get_vision_type(player_num: int) -> Vision:
         "4": "Far-Sight Vision - Sees the furthest ahead",
     }
 
-    print(f"\nVision types for Player {player_num}:")
+    print(f"\n[bold]Vision types for Player {player_num}:")
     for key, desc in vision_choices.items():
         print(f"{key}. {desc}")
 
@@ -56,7 +56,7 @@ def get_brain_type(player_num: int) -> Brain:
         "3": "Gold Brain - Prioritizes finding gold",
     }
 
-    print(f"\nBrain types for Player {player_num}:")
+    print(f"\n[bold]Brain types for Player {player_num}:")
     for key, desc in brain_choices.items():
         print(f"{key}. {desc}")
 
@@ -77,7 +77,7 @@ def get_difficulty() -> str:
         "3": "Hard",
     }
 
-    print("Difficulty levels:")
+    print("[bold]Difficulty levels:")
     for key, desc in difficulty_choices.items():
         print(f"{key}. {desc}")
 
@@ -117,7 +117,7 @@ def confirm_configuration(player_configs: list[dict]) -> bool:
     Returns:
         bool: True if the configuration is confirmed, False otherwise.
     """
-    print("\nCurrent player configurations:")
+    print("\n[bold]Current player configurations:")
     config_display = [ Panel(f"{config['vision']}\n{config['brain'].__name__}", title=f"Player {i+1}") for i, config in enumerate(player_configs) ]
     print(Columns(config_display, equal=True))
     return Prompt.ask("Is this configuration okay?", choices=["y", "n"], default="y") == "y"
