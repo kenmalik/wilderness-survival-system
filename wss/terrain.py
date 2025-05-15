@@ -15,6 +15,13 @@ class Terrain(TextRenderable, ABC):
     Abstract base class for all terrain types.
     Defines the interface that all terrain types must implement.
     """
+
+    # Default properties for terrain
+    ICON = "?"              # Character used to represent terrain on the map
+    MOVEMENT_COST = -1       # Strength cost for moving through terrain
+    WATER_COST = -1         # Water cost for moving through terrain
+    FOOD_COST = -1          # Food cost for moving through terrain
+
     @abstractmethod
     def apply_cost(self, player: Player):
         """

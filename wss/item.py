@@ -10,6 +10,10 @@ from text_renderable import TextRenderable
 from rich.text import Text
 import random
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class Item(TextRenderable, ABC):
     """
@@ -185,11 +189,13 @@ class Trader(Item, ABC):
         return player_roll >= trader_roll
 
     def apply_effect(self, player: Player):
+        logger.debug(f"Trade beginning, current stats are {player!r}")
         while self.num_trades <= self.MAX_TRADES:
             self.trader_trade(player)
             if self.num_trades <= self.MAX_TRADES:
                 self.player_trade(player)
         self.num_trades = 0
+        logger.debug(f"Trade done, current stats are {player!r}")
 
     def render(self, context: Text):
         """

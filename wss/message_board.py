@@ -5,7 +5,6 @@ maintaining a history of recent events.
 """
 
 from rich.text import Text
-from direction import direction_strings
 from listener import Listener
 from event import Event
 
@@ -34,7 +33,7 @@ class MessageBoard(Listener):
             player = event.data["player"]
             direction = event.data["direction"]
             self.message_stack.append(
-                f"Player {player.icon}: I'll travel {direction_strings[direction]}"
+                f"Player {player.icon}: I'll travel {direction}"
             )
 
         # Handle item pickup events

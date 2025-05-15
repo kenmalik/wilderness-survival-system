@@ -13,7 +13,7 @@ class Event:
         type (str): The type of event (e.g., "moved", "item_picked_up", "player_dead")
         data (dict): Additional data associated with the event
     """
-    def __init__(self, type: str, data: dict):
+    def __init__(self, type: str, data: dict | None):
         """
         Initialize a new event.
         
