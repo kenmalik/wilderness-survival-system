@@ -62,6 +62,15 @@ class GoldBonus(Item):
         """
         context.append(self.icon, style="bold black on yellow")
 
+    def __str__(self):
+        """
+        String representation of the gold bonus item.
+
+        Returns:
+            str: The string representation of the item
+        """
+        return f"Gold bonus"
+
 
 class FoodBonus(Item):
     """
@@ -97,6 +106,15 @@ class FoodBonus(Item):
         """
         context.append(self.icon, style="bold white on dark_red")
 
+    def __str__(self):
+        """
+        String representation of the food bonus item.
+
+        Returns:
+            str: The string representation of the item
+        """
+        return f"Food bonus"
+
 
 class WaterBonus(Item):
     """
@@ -131,6 +149,15 @@ class WaterBonus(Item):
             context (Text): Rich text object to append the item icon to
         """
         context.append(self.icon, style="bold white on dodger_blue3")
+
+    def __str__(self):
+        """
+        String representation of the water bonus item.
+
+        Returns:
+            str: The string representation of the item
+        """
+        return f"Water bonus"
 
 
 class Trader(Item, ABC):
@@ -172,6 +199,15 @@ class Trader(Item, ABC):
             context (Text): Rich text object to append the item icon to
         """
         context.append(self.icon, style="white on black")
+
+    def __str__(self):
+        """
+        String representation of the trader item.
+
+        Returns:
+            str: The string representation of the item
+        """
+        return "Trader"
 
 
 class FairTrader(Trader):
