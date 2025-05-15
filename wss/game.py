@@ -13,8 +13,6 @@ from rich.live import Live
 from player import Player
 from event import Event
 
-from vision import FocusedVision
-
 import time
 
 
@@ -42,7 +40,7 @@ class Game:
         },
     }
 
-    def __init__(self, difficulty: str, player_count: int, player_configs: list[dict] | None = None):
+    def __init__(self, difficulty: str, player_count: int, player_configs: list[dict]):
         """
         Initialize a new game instance.
         
@@ -62,14 +60,12 @@ class Game:
         self.dead_players: list[Player] = []
         self.players: list[Player] = []
         
-        # Use default configurations if none provided
-        if player_configs is None:
-            player_configs = [{"vision": FocusedVision(), "brain": "food"} for _ in range(player_count)]
-        
         # Create players with their configurations
         for i in range(1, player_count + 1):
             config = player_configs[i-1]
-            self.players.append(Player(str(i), self.map, config["vision"], config["brain"]))
+            player = Player(str(i), self.map, config["vision"])
+            player.set_brain(config["brain"](player))
+            self.players.append(player)
             
         self.map.place_players(self.players)
 
