@@ -12,6 +12,7 @@ import logging
 import math
 
 from direction import Direction
+from event import Event
 
 logger = logging.getLogger(__name__)
 
@@ -38,37 +39,41 @@ class Brain(ABC):
         """
         self.player = player
 
-    def calculate_move(self) -> Direction:
+    def choose_action(self) -> Event:
         """
-        Calculate the next move for the player based on current conditions.
+        Calculate the next action for the player based on current conditions.
         
         Priority order:
-        1. Move towards resources if any stat is very low
-        2. Move towards priority items based on brain type
-        3. Move towards any close items
-        4. Default to moving east
+        1. Rest if strength is very low
+        2. Move towards resources if any stat is very low
+        3. Move towards priority items based on brain type
+        4. Move towards any close items
+        5. Default to moving east
         
         Returns:
             Direction: The direction to move in
         """
+
+        # Check if need to rest
+        if self.player.current_strength < VERY_LOW_STAT_THRESHOLD:
+            return Event("rest", None)
+
         # Check for critically low stats first
         very_low = self._check_very_low()
         if very_low:
-            return self._calculate_direction((self.player.y, self.player.x), very_low)
+            return Event("move", {"direction": self._calculate_direction((self.player.y, self.player.x), very_low)})
 
         # Check for priority items based on brain type
         priority_item = self._check_priority_item()
         if priority_item:
-            return self._calculate_direction(
-                (self.player.y, self.player.x), priority_item
-            )
+            return Event("move", {"direction": self._calculate_direction((self.player.y, self.player.x), priority_item)})
 
         # Check for any close items
         close_item = self._check_close_item()
         if close_item:
-            return self._calculate_direction((self.player.y, self.player.x), close_item)
+            return Event("move", {"direction": self._calculate_direction((self.player.y, self.player.x), close_item)})
 
-        return Direction.EAST  # Default move
+        return Event("move", {"direction": Direction.EAST}) # Default to moving east
 
     def _check_very_low(self) -> tuple[int, int] | None:
         """
