@@ -29,15 +29,15 @@ class Game:
     # Predefined difficulty levels with corresponding map sizes and item counts
     difficulty_presets = {
         "Easy": {
-            "map_size": (16, 64),    # Width: 16, Height: 64
+            "map_size": (16, 64),    # Height: 16, Width: 64
             "item_count": 80,        # Number of items to spawn
         },
         "Medium": {
-            "map_size": (24, 96),    # Width: 24, Height: 96
+            "map_size": (24, 96),    # Height: 24, Width: 96
             "item_count": 120,       # Number of items to spawn
         },
         "Hard": {
-            "map_size": (32, 128),   # Width: 32, Height: 128
+            "map_size": (32, 128),   # Height: 32, Width: 128
             "item_count": 200,       # Number of items to spawn
         },
     }
