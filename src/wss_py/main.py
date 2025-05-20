@@ -1,14 +1,15 @@
 import sys
+import logging
+import signal
+
 from rich.prompt import IntPrompt, Prompt
 from rich.columns import Columns
 from rich.panel import Panel
 from rich import print
-import logging
-import signal
 
-from game import Game
-from vision import Vision, FocusedVision, CautiousVision, KeenEyedVision, FarSightVision
-from brain import Brain, FoodBrain, WaterBrain, GoldBrain
+from wss_py.game import Game
+from wss_py.vision import Vision, FocusedVision, CautiousVision, KeenEyedVision, FarSightVision
+from wss_py.brain import Brain, FoodBrain, WaterBrain, GoldBrain
 
 logger = logging.getLogger(__name__)
 

@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+pythonpath = "src"
+
+[project]
+name = "wss_py"
+version = "0.0.1"
+description = "A self-playing terminal UI game."
+authors = [
+  { name="Kenji Longid" },
+  { name="Chris Iang" },
+  { name="Makar Dzerushau" },
+  { name="Youngchan Kim" },
+]
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+license = { text="MIT" }
+license-files = ["LICEN[CS]E*"]
+dependencies = [
+  "rich",
+  "numpy",
+  "noise",
+]
+
+[project.scripts]
+wss = "wss_py.main:main"
