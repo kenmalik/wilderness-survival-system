@@ -11,13 +11,13 @@ from abc import ABC, abstractmethod
 import logging
 import math
 
-from direction import Direction, angle_to_direction
-from event import Event
+from wss_py.direction import Direction, angle_to_direction
+from wss_py.event import Event
 
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from player import Player
+    from wss_py.player import Player
 
 # Thresholds for resource management
 VERY_LOW_STAT_THRESHOLD = 10  # Critical level for resources

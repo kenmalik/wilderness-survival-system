@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from event import Event
+from wss_py.event import Event
 
 class Listener(ABC):
     @abstractmethod

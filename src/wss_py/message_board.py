@@ -5,8 +5,9 @@ maintaining a history of recent events.
 """
 
 from rich.text import Text
-from listener import Listener
-from event import Event
+
+from wss_py.listener import Listener
+from wss_py.event import Event
 
 
 class MessageBoard(Listener):

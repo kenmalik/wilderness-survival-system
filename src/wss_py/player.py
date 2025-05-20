@@ -7,18 +7,18 @@ including their stats, movement, and decision-making capabilities.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from text_renderable import TextRenderable
 from rich.text import Text
 
-from direction import Direction
-from vision import Vision
-from brain import Brain
+from wss_py.text_renderable import TextRenderable
+from wss_py.direction import Direction
+from wss_py.vision import Vision
+from wss_py.brain import Brain
 
 import logging
 
 
 if TYPE_CHECKING:
-    from map import Map
+    from wss_py.map import Map
 
 
 logger = logging.getLogger(__name__)

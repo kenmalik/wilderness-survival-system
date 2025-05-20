@@ -4,18 +4,20 @@ This module handles the game map, including terrain generation, item placement,
 and player movement mechanics.
 """
 
-from direction import Direction
-from item import FoodBonus, GoldBonus, Item, WaterBonus, Trader, FairTrader, HagglingTrader
-from terrain import Plains, Desert, Mountain, Forest, Swamp, Terrain
-from player import Player
-import random
+from wss_py.direction import Direction
+from wss_py.item import FoodBonus, GoldBonus, Item, WaterBonus, Trader, FairTrader, HagglingTrader
+from wss_py.terrain import Plains, Desert, Mountain, Forest, Swamp, Terrain
+from wss_py.player import Player
+from wss_py.event import Event
+from wss_py.listener import Listener
+
 from rich.text import Text
 from rich.panel import Panel
 from rich.padding import Padding
 import numpy as np
 import noise
-from event import Event
-from listener import Listener
+
+import random
 
 # Types of items that can be placed on the map
 ITEM_TYPES = (GoldBonus, FoodBonus, WaterBonus)

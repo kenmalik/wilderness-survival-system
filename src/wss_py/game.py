@@ -4,16 +4,16 @@ This module handles the core game logic, including game state, player management
 and UI rendering.
 """
 
-from message_board import MessageBoard
-from map import Map
-from player import Player
+from wss_py.message_board import MessageBoard
+from wss_py.map import Map
+from wss_py.player import Player
+from wss_py.event import Event
+
 from rich.layout import Layout
 from rich.panel import Panel
 from rich.live import Live
 from rich.text import Text
 from rich.align import Align
-from player import Player
-from event import Event
 
 import time
 

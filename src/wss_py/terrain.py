@@ -5,10 +5,11 @@ each with unique properties and effects on players.
 """
 
 from abc import ABC, abstractmethod
-from player import Player
-from text_renderable import TextRenderable
+
 from rich.text import Text
 
+from wss_py.text_renderable import TextRenderable
+from wss_py.player import Player
 
 class Terrain(TextRenderable, ABC):
     """

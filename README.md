@@ -1,4 +1,4 @@
-![WSS Logo](assets/logo.png)
+![WSS Logo](https://github.com/kenmalik/wilderness-survival-system/blob/de71a00ddf02ef59b48a85b331612210cf47c941/assets/logo.png)
 
 # Wilderness Survival System
 
@@ -9,24 +9,16 @@ unknown wilderness. Players are placed randomly on the west side of the map and
 make decisions to try and get to the east side of the map. After the players are
 placed, the game runs itself (similar to John Conway's Game of Life).
 
-## Developing
-
-To start developing, clone this repo, make a venv, and install from
-`requirements.txt`
-
-To do that, run the following commands from the root directory:
-
-```
-python3 -m venv .venv
-. .venv/bin/activate
-pip install -r requirements.txt
-```
-
 ## Usage
 
-To play the game, after installing requirements (see [here](#developing)),
-simply run the following command:
+Install the game using `pipx`
 
 ```
-python wss.py
+pipx install wss-py
+```
+
+To play simply run the following command
+
+```
+wss
 ```

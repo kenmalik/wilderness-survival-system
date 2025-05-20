@@ -5,12 +5,13 @@ including resource bonuses and traders.
 """
 
 from abc import ABC, abstractmethod
-from player import Player
-from text_renderable import TextRenderable
 from rich.text import Text
 import random
 
 import logging
+
+from wss_py.player import Player
+from wss_py.text_renderable import TextRenderable
 
 logger = logging.getLogger(__name__)
 

@@ -7,12 +7,13 @@ what players can see on the map and how they perceive their surroundings.
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from direction import Direction
-
-if TYPE_CHECKING:
-    from player import Player
+from wss_py.direction import Direction
 
 import logging
+
+if TYPE_CHECKING:
+    from wss_py.player import Player
+
 
 logger = logging.getLogger(__name__)
 
@@ -105,7 +106,7 @@ class Vision():
         Returns:
             tuple[int, int] | None: Coordinates of the closest food, or None
         """
-        from item import FoodBonus   # To avoid circular import issue
+        from wss_py.item import FoodBonus   # To avoid circular import issue
         return self._closest_item(player, FoodBonus)
 
     def closest_water(self, player):
@@ -118,7 +119,7 @@ class Vision():
         Returns:
             tuple[int, int] | None: Coordinates of the closest water, or None
         """
-        from item import WaterBonus
+        from wss_py.item import WaterBonus
         return self._closest_item(player, WaterBonus)
 
     def closest_gold(self, player): 
@@ -131,7 +132,7 @@ class Vision():
         Returns:
             tuple[int, int] | None: Coordinates of the closest gold, or None
         """
-        from item import GoldBonus  
+        from wss_py.item import GoldBonus  
         return self._closest_item(player, GoldBonus)
 
     def closest_trader(self, player): 
@@ -144,7 +145,7 @@ class Vision():
         Returns:
             tuple[int, int] | None: Coordinates of the closest trader, or None
         """
-        from item import Trader
+        from wss_py.item import Trader
         return self._closest_item(player, Trader)
         
     def easiest_path(self, player):
