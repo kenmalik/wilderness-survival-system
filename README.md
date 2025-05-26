@@ -9,6 +9,8 @@ unknown wilderness. Players are placed randomly on the west side of the map and
 make decisions to try and get to the east side of the map. After the players are
 placed, the game runs itself (similar to John Conway's Game of Life).
 
+![Demo Run](https://raw.githubusercontent.com/kenmalik/wilderness-survival-system/main/assets/demo.gif)
+
 ## Usage
 
 Install the game using `pipx`
